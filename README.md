@@ -42,3 +42,13 @@
    PowerShell
 
    python -m pip freeze | ForEach-Object { python -m pip uninstall -y $_ }
+
+## Celery:
+
+   Запуск воркера:
+
+      python -m celery -A app:celery worker --loglevel=INFO --pool=solo
+
+   Запуск фловера:
+
+      python -m celery -A app:celery flower
