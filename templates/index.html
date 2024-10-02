@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Устанавливаем кодировку страницы для правильного отображения символов -->
+    <meta charset="UTF-8">
+    <!-- Настройка масштабирования для адаптивного дизайна на мобильных устройствах -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Заголовок страницы -->
+    <title>Газификация</title>
+    <!-- Подключаем стили для Bootstrap из статической папки -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!-- Подключаем пользовательский стиль из статической папки -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+
+    <div class="center-content">
+        <div class="container-fluid-neverov">
+
+            <h1>Газификация</h1>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} mt-3">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <!-- Выход из профиля -->
+            <div class="center-content">
+                <a href="{{ url_for('logout') }}" class="btn btn-danger">Выход</a>
+            </div>
+
+            <form method="GET" action="/" id="filter-form" class="form-group">
+                <div class="form-item">
+                    <label for="keyword">Поиск по ключевому слову:</label>
+                    <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Ключевое слово"
+                        value="{{ request.args.get('keyword', '') }}">
+                </div>
+                <div class="form-item">
+                    <label for="column">Выберите столбец:</label>
+                    <select name="column" id="column" class="form-control">
+                        <option value="">Столбец</option>
+                        <option value="id_id" {% if selected_column=='id_id' %}selected{% endif %}>№ п/п</option>
+                        <option value="name" {% if selected_column=='name' %}selected{% endif %}>ФИО заявителя</option>
+                        <option value="snils" {% if selected_column=='snils' %}selected{% endif %}>СНИЛС</option>
+                        <option value="location" {% if selected_column=='location' %}selected{% endif %}>Район</option>
+                        <option value="address_p" {% if selected_column=='address_p' %}selected{% endif %}>Населённый
+                            пункт</option>
+                        <option value="address" {% if selected_column=='address' %}selected{% endif %}>Адрес</option>
+                        <option value="benefit" {% if selected_column=='benefit' %}selected{% endif %}>Льгота</option>
+                        <option value="number" {% if selected_column=='number' %}selected{% endif %}>Серия и номер
+                        </option>
+                        <option value="year" {% if selected_column=='year' %}selected{% endif %}>Дата выдачи сертификата
+                        </option>
+                        <option value="cost" {% if selected_column=='cost' %}selected{% endif %}>Размер выплаты</option>
+                        <option value="certificate" {% if selected_column=='certificate' %}selected{% endif %}>
+                            Сертификат</option>
+                        <option value="date_number_get" {% if selected_column=='date_number_get' %}selected{% endif %}>
+                            Дата и номер решения о выдаче</option>
+                        <option value="date_number_cancellation" {% if selected_column=='date_number_cancellation'
+                            %}selected{% endif %}>Дата и № решения об аннулировании</option>
+                        <option value="date_number_no_one" {% if selected_column=='date_number_no' %}selected{% endif %}>
+                            Дата решения об отказе в выдаче</option>
+                        <option value="date_number_no_two" {% if selected_column=='date_number_no' %}selected{% endif %}>
+                            № решения об отказе в выдаче</option>
+                        <option value="certificate_no" {% if selected_column=='certificate_no' %}selected{% endif %}>
+                            Отказ в выдаче</option>
+                        <option value="reason" {% if selected_column=='reason' %}selected{% endif %}>Основная причина
+                            отказа</option>
+                        <option value="track" {% if selected_column=='track' %}selected{% endif %}>ТРЕК</option>
+                        <option value="date_post" {% if selected_column=='date_post' %}selected{% endif %}>Дата отправки
+                            почтой</option>
+                        <option value="comment" {% if selected_column=='comment' %}selected{% endif %}>Комментарий</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="year">Выберите год:</label>
+                    <select name="year" id="year" class="form-control form-control-year">
+                        <option value="No">Год</option>
+                        {% for year in service_years %}
+                        <option value="{{ year }}" {% if year==selected_year %}selected{% endif %}>
+                            {{ year }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-item-neverov">
+                    <button type="submit" class="btn btn-primary">Фильтровать по году</button>
+                    <button type="button" class="btn btn-secondary" id="reset-filters">Сбросить всё</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="container-fluid-neverov">
+            <div class="scroll-container">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="fixed-width">№ п/п</th>
+                            <th class="stretch-width">ФИО заявителя</th>
+                            <th class="stretch-width">СНИЛС</th>
+                            <th class="fixed-width">Район</th>
+                            <th class="stretch-width">Населённый пункт</th>
+                            <th class="stretch-width">Адрес</th>
+                            <th class="fixed-width">Льгота</th>
+                            <th class="stretch-width">Серия и номер</th>
+                            <th class="fixed-width">Дата выдачи сертификата</th>
+                            <th class="stretch-width">Размер выплаты</th>
+                            <th class="stretch-width">Сертификат</th>
+                            <th class="fixed-width">Дата и номер решения о выдаче</th>
+                            <th class="fixed-width">Дата и № решения об аннулировании</th>
+                            <th class="fixed-width">Дата решения об отказе в выдаче</th>
+                            <th class="fixed-width">№ решения об отказе в выдаче</th>
+                            <th class="stretch-width">Отказ в выдаче</th>
+                            <th class="stretch-width">Основная причина отказа</th>
+                            <th class="stretch-width">ТРЕК</th>
+                            <th class="fixed-width">Дата отправки почтой</th>
+                            <th class="fixed-width">Комментарий</th>
+                            <th class="fixed-width">Управление</th>
+                            <th class="fixed-width">Выбор цвета</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr class="service-row" data-id="{{ service.id }}">
+                            <!-- Аналогично добавьте классы для td -->
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.id_id
+                                }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.name }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.snils }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.location }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.address_p }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.address }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.benefit }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.number }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.year
+                                }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.cost }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.certificate }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_number_get }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_number_cancellation }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_number_no_one }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_number_no_two }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.certificate_no }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.reason }}</td>
+                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                                service.track }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.date_post }}</td>
+                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                                service.comment }}</td>
+                            <td class="stretch-width">
+                                <!-- Управление -->
+                                <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                                    <a href="{{ url_for('edit', id=service.id, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year) }}"
+                                        class="btn btn-sm btn-warning">Edit</a>
+                                    <form class="delete-form" data-id="{{ service.id }}" style="display:inline;">
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
+                                        <button type="button" class="btn btn-sm btn-danger delete-button">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                            <td class="stretch-width">
+                                <!-- Выбор цвета -->
+                                <select class="form-control color-select" data-id="{{ service.id }}">
+                                    <option value="#ffffff">Default</option>
+                                    <option value="#eaf7ff" {% if service.color=='#eaf7ff' %}selected{% endif %}>Light Blue</option>
+                                    <option value="#ffebeb" {% if service.color=='#ffebeb' %}selected{% endif %}>Light Red</option>
+                                    <option value="#dff0d8" {% if service.color=='#dff0d8' %}selected{% endif %}>Light Green</option>
+                                    <option value="#f5f5f5" {% if service.color=='#f5f5f5' %}selected{% endif %}>Light Grey</option>
+                                    <option value="#fff8e1" {% if service.color=='#fff8e1' %}selected{% endif %}>Light Yellow</option>
+                                </select>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container-fluid-neverov">
+            <div style="display: flex; justify-content: flex-end;">
+                <!-- Pagination Controls -->
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        {% if page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=page-1) }}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        <!-- Show "Previous" button if not on the first page group -->
+                        {% if start_page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=1) }}">1</a>
+                        </li>
+                        {% if start_page > 2 %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                        {% endif %}
+
+                        <!-- Show a few pages around the current page -->
+                        {% for p in range(start_page, end_page + 1) %}
+                        <li class="page-item {% if p == page %}active{% endif %}">
+                            <a class="page-link"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=p) }}">{{ p }}</a>
+                        </li>
+                        {% endfor %}
+
+                        <!-- Show "Next" button if not on the last page group -->
+                        {% if end_page < total_pages %} {% if end_page < total_pages - 1 %} <li
+                            class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                            <li class="page-item">
+                                <a class="page-link"
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=total_pages) }}">{{
+                                    total_pages }}</a>
+                            </li>
+                            {% endif %}
+
+                            {% if page < total_pages %} <li class="page-item">
+                                <a class="page-link"
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=page+1) }}"
+                                    aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                                </li>
+                                {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <div class="container-fluid-neverov">
+            <h4>Итог выплат за выбранное время: {{ total_cost_1 }}</h4>
+            <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
+            <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
+            <br>
+            <a href="{{ url_for('add_edit', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, total_pages=total_pages) }}" class="btn btn-warning">Добавить данные</a>
+            <br>
+            <h1>Экспорт услуг в Excel</h1>
+            <br>
+
+            <form id="export-form" onsubmit="showFlashMessage(event)">
+                <input type="hidden" name="year" value="{{ selected_year if selected_year else 'No' }}">
+                <div class="alert alert-success" id="flash-message" style="display: none;"></div>
+                <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/jquery-3.5.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+    <script>
+
+        function showFlashMessage(event) {
+
+            // Показываем сообщение
+            const flashMessage = document.getElementById('flash-message');
+            flashMessage.style.display = 'block';
+
+        }
+
+        const socket = io();  // Инициализация сокета
+        console.log('Сокет инициализирован'); // Лог инициализации сокета
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const exportButton = document.getElementById('export-button');
+            let requestInProgress = false; // Флаг, указывающий на статус запроса
+            let taskId = null; // ID задачи Celery
+            
+            exportButton.onclick = function (event) {
+                event.preventDefault();  // Предотвращаем стандартное поведение кнопки
+                
+                // Проверяем, есть ли уже активный запрос
+                if (requestInProgress) {
+                    console.log('Запрос уже выполняется, новая отправка отменена'); // Лог если запрос в процессе
+                    return; // Если запрос в процессе, просто выходим
+                }
+
+                // Устанавливаем флаг, что запрос начат
+                requestInProgress = true;
+                console.log('Запрос на экспорт начат'); // Лог начала запроса
+                
+                // Отображаем сообщение сразу после нажатия на кнопку
+                const flashMessage = document.getElementById('flash-message');
+                flashMessage.innerText = 'Пожалуйста, подождите, идёт загрузка!';
+                flashMessage.style.display = 'block'; // Убедитесь, что сообщение отображается
+
+                // Создаем временный элемент формы для отправки
+                const form = document.getElementById('export-form');
+                const formData = new FormData(form);
+
+                // Извлекаем значение года из FormData
+                const year = formData.get('year');
+                console.log(`Отправка запроса на экспорт для года: ${year}`); // Лог года
+
+                // Отправляем запрос на сервер через WebSocket
+                socket.emit('export_excel', { year: year });
+            };
+
+            // Обработка события 'export_started' от сервера, где передается task_id
+            socket.once('export_started', function(data) {
+                taskId = data.task_id; // Сохраняем ID задачи
+                console.log(`Экспорт начат, ID задачи: ${taskId}`); // Лог ID задачи
+
+                // Теперь нужно периодически проверять статус задачи по taskId
+                const checkStatusInterval = setInterval(function() {
+                    console.log(`Проверка статуса задачи с ID: ${taskId}`); // Лог проверки статуса
+                    // Отправляем запрос на проверку статуса задачи
+                    socket.emit('check_task_status', { task_id: taskId });
+                }, 2000); // Проверяем каждые 2 секунды
+
+                // Остановка проверки после получения результата
+                socket.once('export_success', function(data) {
+                    console.log(`Экспорт завершён успешно: ${data.filename}`); // Лог успешного завершения
+                    clearInterval(checkStatusInterval); // Останавливаем проверку
+                    
+                    // Создаем ссылку для скачивания файла
+                    const link = document.createElement('a');
+                    link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.file_data;
+                    link.download = data.filename;
+                    link.click();
+
+                    // Скрываем сообщение после успешной загрузки
+                    const flashMessage = document.getElementById('flash-message');
+                    flashMessage.innerText = 'Экспорт завершен!';
+                    flashMessage.style.display = 'block';
+
+                    // Сбрасываем флаг после завершения загрузки
+                    requestInProgress = false;
+                });
+
+                // Обработка потери соединения
+                socket.once('disconnect', function() {
+                    console.log('Соединение потеряно'); // Лог потери соединения
+                    const flashMessage = document.getElementById('flash-message');
+                    flashMessage.innerText = 'Соединение потеряно. Экспорт отменён.';
+                    flashMessage.style.display = 'block';
+
+                    // Сбрасываем флаг при потере соединения
+                    requestInProgress = false; // Разрешаем отправку нового запроса
+                });
+
+                // Обработка потери соединения
+                socket.once('task_status_pending', function() {
+                    console.log('В ожидании.'); // Лог потери соединения
+                    const flashMessage = document.getElementById('flash-message');
+                    flashMessage.innerText = 'В ожидании.';
+                    flashMessage.style.display = 'block';
+                });
+
+                // Обработка потери соединения
+                socket.once('task_status_failure', function() {
+                    console.log('Отказ.'); // Лог потери соединения
+                    const flashMessage = document.getElementById('flash-message');
+                    flashMessage.innerText = 'Отказа.';
+                    flashMessage.style.display = 'block';
+                });
+
+            });
+
+        });
+
+        window.onload = function () {
+            window.scrollTo(0, 0);
+        };
+
+        // Функция сброса фильтров и прокрутки
+        function resetFilters() {
+            document.getElementById('year').value = '';
+            document.getElementById('keyword').value = '';
+            document.getElementById('column').value = '';
+            document.getElementById('filter-form').submit();
+            window.scrollTo(0, 0);
+        }
+
+        // Функция обновления цвета строки
+        function updateColor(rowId, color) {
+            const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+            fetch(`/update-color/${rowId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // Замените csrfToken на фактический токен
+                },
+                body: JSON.stringify({ color: color })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const row = document.querySelector(`.service-row[data-id="${data.id}"]`);
+                        if (row) {
+                            row.style.backgroundColor = data.color;
+                            const cells = row.querySelectorAll('td');
+                            // console.log('Ячейки:', cells); // Добавьте это для отладки
+                            // Изменение цвета всех ячеек, кроме последних двух
+                            const cellsToUpdate = Array.from(cells).slice(0, -2);
+                            cellsToUpdate.forEach(cell => {
+                                // console.log('Изменение цвета ячейки', cell); // Добавьте это для отладки
+                                cell.style.backgroundColor = data.color;
+                            });
+                        }
+                    } else {
+                        console.log('rowId:', rowId, 'color:', color);
+                        alert('Не удалось обновить цвет');
+                    }
+                })
+                .catch(error => console.error('Ошибка:', error));
+        }
+
+        function confirmDelete() {
+            return confirm('Вы уверены, что хотите удалить этот элемент?');
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorSelects = document.querySelectorAll('.color-select');
+
+            colorSelects.forEach(select => {
+                select.addEventListener('change', function () {
+                    const rowId = this.getAttribute('data-id');
+                    const selectedColor = this.value;
+
+                    updateColor(rowId, selectedColor);
+                });
+            });
+
+            // Восстановление позиции скролла
+            const scrollPosition = localStorage.getItem('scrollPosition');
+            if (scrollPosition) {
+                window.scrollTo(0, scrollPosition);
+            }
+        });
+
+        window.addEventListener('beforeunload', function () {
+            // Сохранение позиции скролла
+            localStorage.setItem('scrollPosition', window.scrollY);
+        });
+
+        // Обработчик нажатия на кнопку сброса фильтров
+        document.getElementById('reset-filters').addEventListener('click', function () {
+            resetFilters();
+        });
+
+        // Обработчик нажатия на кнопку фильтрации
+        document.getElementById('filter-form').addEventListener('submit', function (event) {
+            window.scrollTo(0, 0);
+            // Обрезаем пробелы с двух сторон поля ввода
+            var keywordInput = document.getElementById('keyword');
+            keywordInput.value = keywordInput.value.trim();
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!navigator.userAgent.includes('AppleWebKit')) {
+                document.querySelector('.wrapper').innerHTML = '<p>Sorry! Non webkit users.</p>';
+            }
+        });
+
+        // Прокрутка таблицы при нажатии левой кнопки мыши
+        document.addEventListener('DOMContentLoaded', function () {
+            const scrollContainer = document.querySelector('.scroll-container');
+            let isMouseDown = false;
+            let startX;
+            let scrollLeft;
+
+            scrollContainer.addEventListener('mousedown', (e) => {
+                isMouseDown = true;
+                startX = e.pageX - scrollContainer.offsetLeft;
+                scrollLeft = scrollContainer.scrollLeft;
+                scrollContainer.style.cursor = 'grabbing';
+            });
+
+            scrollContainer.addEventListener('mouseleave', () => {
+                isMouseDown = false;
+                scrollContainer.style.cursor = 'default';
+            });
+
+            document.addEventListener('mouseup', () => {
+                isMouseDown = false;
+                scrollContainer.style.cursor = 'default';
+            });
+
+            scrollContainer.addEventListener('mousemove', (e) => {
+                if (!isMouseDown) return;
+                e.preventDefault();
+                const x = e.pageX - scrollContainer.offsetLeft;
+                const walk = (x - startX) * 2; // Скорость прокрутки
+                scrollContainer.scrollLeft = scrollLeft - walk;
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-button');
+
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const form = this.closest('.delete-form');
+                    const serviceId = form.getAttribute('data-id');
+
+                    if (confirmDelete()) {
+                        fetch(`/delete/${serviceId}`, {  // Убедитесь, что здесь правильный путь
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': form.querySelector('input[name="csrf_token"]').value  // CSRF токен
+                            },
+                            body: JSON.stringify({ id: serviceId })  // Отправка данных, если необходимо
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                const row = document.querySelector(`.service-row[data-id="${serviceId}"]`);
+                                if (row) {
+                                    row.remove();
+                                }
+                                alert('Элемент успешно удален!'); // Уведомление об успешном удалении
+                            } else {
+                                alert('Ошибка удаления');
+                            }
+                        })
+                        .catch(error => console.error('Ошибка:', error));
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
