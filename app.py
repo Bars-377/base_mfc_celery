@@ -661,7 +661,7 @@ socketio = SocketIO(app)
 @celery.task
 def export_excel_task(sid, data):
     with app.app_context():  # Создание контекста приложения
-        print('NEVEROV_NEVEROV_NEVEROV')
+
         try:
 
             print(f"Начало экспорта для сессии {sid} с данными: {data}")
@@ -797,13 +797,32 @@ def export_excel_task(sid, data):
 
             output.seek(0)
 
-            # Преобразуем файл в base64, чтобы отправить его через WebSocket
-            file_data = base64.b64encode(output.read()).decode('utf-8')
+            import datetime
+            date = str(datetime.datetime.now().date())
+
+            # Определите путь для сохранения файла
+            file_path = f'C:\\Users\\admin\\Desktop\\file\\services_{sid}_{date}.xlsx'
+
+            # Сохраняем файл на диск
+            with open(file_path, 'wb') as f:
+                f.write(output.read())
+
+            # Возвращаем путь к файлу для отправки клиенту
+            filename = f"services_{sid}_{date}.xlsx"
+            file_url = f"/file/{filename}"
+
+            # # Emit the success event with file URL
+            # socketio.emit('export_success', {'file_url': file_url, 'filename': filename}, room=sid)
+
+            return file_url, filename
+
+            # # Преобразуем файл в base64, чтобы отправить его через WebSocket
+            # file_data = base64.b64encode(output.read()).decode('utf-8')
+            # # return file_data
+
+            # print(f"Отправка данных клиенту: {file_data}, имя файла: services.xlsx")
+
             # return file_data
-
-            print(f"Отправка данных клиенту: {file_data}, имя файла: services.xlsx")
-
-            return file_data
 
         except Exception as e:
             print(f"Ошибка в задаче для сессии {sid}: {e}")
@@ -832,9 +851,17 @@ def handle_check_task_status(data):
         socketio.emit('task_status_pending', {'status': 'pending'}, room=request.sid)
     elif task_result.state == 'SUCCESS':
         # socketio.emit('task_status', {'status': 'success'}, room=request.sid)
-        socketio.emit('export_success', {'file_data': task_result.result, 'filename': 'services.xlsx'}, room=request.sid)
+        # socketio.emit('export_success', {'file_data': task_result.result, 'filename': 'services.xlsx'}, room=request.sid)
+        socketio.emit('export_success', {'file_url': task_result.result[0], 'filename': task_result.result[1]}, room=request.sid)
     elif task_result.state == 'FAILURE':
         socketio.emit('task_status_failure', {'status': 'failure', 'error': str(task_result.info)}, room=request.sid)
+
+from flask import send_from_directory
+# Маршрут для скачивания файла
+@app.route('/file/<filename>')
+def download_file(filename):
+    directory = r'C:\Users\admin\Desktop\file'
+    return send_from_directory(directory, filename)
 
 @socketio.on('disconnect')
 def handle_disconnect():

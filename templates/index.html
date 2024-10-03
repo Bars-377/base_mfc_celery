@@ -345,10 +345,10 @@
                 socket.once('export_success', function(data) {
                     console.log(`Экспорт завершён успешно: ${data.filename}`); // Лог успешного завершения
                     clearInterval(checkStatusInterval); // Останавливаем проверку
-                    
+
                     // Создаем ссылку для скачивания файла
                     const link = document.createElement('a');
-                    link.href = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,' + data.file_data;
+                    link.href = data.file_url; // Используем URL для скачивания файла
                     link.download = data.filename;
                     link.click();
 
@@ -365,7 +365,7 @@
                 socket.once('disconnect', function() {
                     console.log('Соединение потеряно'); // Лог потери соединения
                     const flashMessage = document.getElementById('flash-message');
-                    flashMessage.innerText = 'Соединение потеряно. Экспорт отменён.';
+                    flashMessage.innerText = 'Соединение потеряно. Экспорт отменён!';
                     flashMessage.style.display = 'block';
 
                     // Сбрасываем флаг при потере соединения
@@ -374,7 +374,7 @@
 
                 // Обработка потери соединения
                 socket.once('task_status_pending', function() {
-                    console.log('В ожидании.'); // Лог потери соединения
+                    console.log('Ожидайте. Очень большой объём файла!'); // Лог потери соединения
                     const flashMessage = document.getElementById('flash-message');
                     flashMessage.innerText = 'В ожидании.';
                     flashMessage.style.display = 'block';
@@ -382,7 +382,15 @@
 
                 // Обработка потери соединения
                 socket.once('task_status_failure', function() {
-                    console.log('Отказ.'); // Лог потери соединения
+                    console.log('Отказ!'); // Лог потери соединения
+                    const flashMessage = document.getElementById('flash-message');
+                    flashMessage.innerText = 'Отказа!';
+                    flashMessage.style.display = 'block';
+                });
+
+                // Обработка потери соединения
+                socket.once('export_error', function() {
+                    console.log('Произошла ошибка формирования файла!'); // Лог потери соединения
                     const flashMessage = document.getElementById('flash-message');
                     flashMessage.innerText = 'Отказа.';
                     flashMessage.style.display = 'block';
