@@ -35,7 +35,7 @@ class Service(db.Model):
     def __init__(self, id_id, name, snils, location,
                 address_p, address, benefit, number,
                 year, cost, certificate, date_number_get,
-                date_number_cancellation, date_number_no,
+                date_number_cancellation, date_number_no_one, date_number_no_two,
                 certificate_no, reason, track, date_post, comment, id=None, color=None):
         self.id = id
         self.id_id = id_id
@@ -51,7 +51,8 @@ class Service(db.Model):
         self.certificate = certificate
         self.date_number_get = date_number_get
         self.date_number_cancellation = date_number_cancellation
-        self.date_number_no = date_number_no
+        self.date_number_no_one = date_number_no_one
+        self.date_number_no_two = date_number_no_two
         self.certificate_no = certificate_no
         self.reason = reason
         self.track = track
