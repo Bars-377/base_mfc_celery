@@ -16,7 +16,15 @@ try:
     # Загрузите данные из Excel
     file_path = 'C:/Users/neverov/Desktop/gaz_1.xlsx'
     sheet_name = 'РЕЕСТР'  # Замените на имя вашего листа
-    df = pd.read_excel(file_path, sheet_name=sheet_name, header=2)
+    df = pd.read_excel(file_path, sheet_name=sheet_name, header=2,
+                    dtype={'№ п/п': str, 'ФИО заявителя': str,
+                        'СНИЛС': str, 'Район': str, 'Адрес нп': str,
+                        'Адрес': str, 'Льгота': str, 'Серия и № сертификата': str,
+                        'Дата выдачи сертификата': str, 'Размер выплаты': str, 'Сертификат': str,
+                        'Дата и № решения о выдаче сертификата': str, 'Дата и № решения об аннулировании сертификата': str, 'Отказ в выдаче сертификата': str,
+                        'Основная причина отказа (пункт)': str, 'Дата решения об отказе в выдаче сертификата': str, 'ТРЕК': str,
+                        '№ решения об отказе в выдаче сертификата': str,
+                        'Дата отправки почтой': str, 'ПАВАПВАПВЫАП': str, 'ТРЕК': str})
 
     def extract_number(value, default="0.0"):
         import re
