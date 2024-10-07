@@ -14,7 +14,7 @@ cursor = conn.cursor()
 
 try:
     # Загрузите данные из Excel
-    file_path = 'C:/Users/neverov/Desktop/gaz_2.xlsx'
+    file_path = 'C:/Users/neverov/Desktop/gaz_1.xlsx'
     sheet_name = 'РЕЕСТР'  # Замените на имя вашего листа
     df = pd.read_excel(file_path, sheet_name=sheet_name, header=2)
 
@@ -23,7 +23,11 @@ try:
         """Извлекает первое число из строки, если оно есть."""
         match = re.search(r"[-+]?\d*[,\.]\d+|\d+", str(value))
         if match:
-            return match.group(0).replace(',', '.')  # Заменяем запятую на точку для поддержки формата float
+            number = match.group(0).replace(',', '.') # Заменяем запятую на точку
+            if number.endswith(".0"):
+                number = number[:-2] # Удаляем ".0" в конце
+            return number
+            # return match.group(0).replace(',', '.')  # Заменяем запятую на точку для поддержки формата float
         return default
 
     def extract_date_and_number(value):
