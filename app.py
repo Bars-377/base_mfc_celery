@@ -63,7 +63,7 @@ def login():
         flash('Неверное имя пользователя или пароль!', 'danger')
     return render_template('login.html')
 
-def skeleton(year, keyword, selected_column, page):
+def skeleton(date_number_no_one, year, keyword, selected_column, page):
     per_page = 20
 
     import re
@@ -75,7 +75,10 @@ def skeleton(year, keyword, selected_column, page):
     pattern_yyyy_mm_dd = r'\b\d{4}-\d{2}-\d{2}\b'
 
     # Сначала выбираем все уникальные значения year из базы
-    all_years = db.session.query(Service.year, Service.date_number_no_one).distinct().all()
+    all_years = db.session.query(Service.year,).distinct().all()
+    all_years_date_number_no_one = db.session.query(Service.date_number_no_one).distinct().all()
+
+    """----------------------------------"""
 
     service_years = []
     empty_found = False  # Флаг для отслеживания пустых строк
@@ -111,6 +114,46 @@ def skeleton(year, keyword, selected_column, page):
     # service_years = db.session.query(db.func.year(Service.year)).distinct().all()
     # service_years = [str(year[0]) for year in service_years]
 
+    """----------------------------------"""
+
+    """----------------------------------"""
+
+    service_years_date_number_no_one = []
+    empty_found_date_number_no_one = False  # Флаг для отслеживания пустых строк
+
+    for year_value in all_years_date_number_no_one:
+        year_str = year_value[0]  # Извлекаем само значение year
+
+        # Проверяем на пустую строку
+        if not year_str:
+            empty_found_date_number_no_one = True
+
+        # Поиск всех дат в строке
+        match_dd_mm_yyyy = re.findall(pattern_dd_mm_yyyy, year_str)
+        match_yyyy_mm_dd = re.findall(pattern_yyyy_mm_dd, year_str)
+
+        # Извлечение годов из найденных дат
+        service_years_date_number_no_one.extend([date_str[-4:] for date_str in match_dd_mm_yyyy])  # Годы из формата "DD.MM.YYYY"
+        service_years_date_number_no_one.extend([date_str[:4] for date_str in match_yyyy_mm_dd])    # Годы из формата "YYYY-MM-DD"
+
+    # Оставляем только уникальные годы и преобразуем в целые числа
+    service_years_date_number_no_one = list(set(int(year) for year in service_years_date_number_no_one if year.isdigit()))
+
+    # Сортируем годы в порядке возрастания
+    service_years_date_number_no_one.sort()
+
+    # Если были пустые строки, добавляем None
+    if empty_found_date_number_no_one:
+        service_years_date_number_no_one.insert(0, None)
+
+    # Преобразуем все значения в строки
+    service_years_date_number_no_one = [str(year) for year in service_years_date_number_no_one]
+
+    # service_years = db.session.query(db.func.year(Service.year)).distinct().all()
+    # service_years = [str(year[0]) for year in service_years]
+
+    """----------------------------------"""
+
     query = Service.query
 
     from sqlalchemy import not_, or_
@@ -119,10 +162,19 @@ def skeleton(year, keyword, selected_column, page):
         year = None
     """ДОДЕЛАТЬ ГОДА НОВЫЕ"""
     if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-        query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+        query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))))
     elif year:
         # query = query.filter(db.func.year(Service.year) == year)
-        query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
+        query = query.filter(Service.year.like(f'%{year}%'))
+
+    if date_number_no_one == 'No':
+        date_number_no_one = None
+    """ДОДЕЛАТЬ ГОДА НОВЫЕ"""
+    if date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+        query = query.filter(not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+    elif date_number_no_one:
+        # query = query.filter(db.func.year(Service.year) == year)
+        query = query.filter(Service.date_number_no_one.like(f'%{date_number_no_one}%'))
 
     if keyword:
         if selected_column and hasattr(Service, selected_column):
@@ -137,7 +189,7 @@ def skeleton(year, keyword, selected_column, page):
     from sqlalchemy import cast, Integer
     query = query.order_by(cast(Service.id_id, Integer).asc(), Service.year.asc())
 
-    if year == 'None':
+    if year == 'None' and date_number_no_one == 'None':
         # Получение данных, которые не соответствуют формату "DD.MM.YYYY" и "YYYY-MM-DD"
         costs = db.session.query(Service.cost).filter(
             not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd)))
@@ -156,7 +208,7 @@ def skeleton(year, keyword, selected_column, page):
         ).all()
 
         total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
-    elif year:
+    elif year and date_number_no_one:
         costs = db.session.query(Service.cost).filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%')).all()
         total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
 
@@ -164,6 +216,62 @@ def skeleton(year, keyword, selected_column, page):
         total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
 
         certificates_no = db.session.query(Service.certificate_no).filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%')).all()
+        total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
+    elif year == 'None' and date_number_no_one != 'None':
+        # Получение данных, которые не соответствуют формату "DD.MM.YYYY" и "YYYY-MM-DD"
+        costs = db.session.query(Service.cost).filter(
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
+
+        certificates = db.session.query(Service.certificate).filter(
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
+
+        certificates_no = db.session.query(Service.certificate_no).filter(
+            not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
+    elif year and not date_number_no_one:
+        costs = db.session.query(Service.cost).filter(Service.year.like(f'%{year}%')).all()
+        total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
+
+        certificates = db.session.query(Service.certificate).filter(Service.year.like(f'%{year}%')).all()
+        total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
+
+        certificates_no = db.session.query(Service.certificate_no).filter(Service.year.like(f'%{year}%')).all()
+        total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
+    elif year != 'None' and date_number_no_one == 'None':
+        # Получение данных, которые не соответствуют формату "DD.MM.YYYY" и "YYYY-MM-DD"
+        costs = db.session.query(Service.cost).filter(
+            not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
+
+        certificates = db.session.query(Service.certificate).filter(
+            not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
+
+        certificates_no = db.session.query(Service.certificate_no).filter(
+            not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd)))
+        ).all()
+
+        total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
+    elif not year and date_number_no_one:
+        costs = db.session.query(Service.cost).filter(Service.date_number_no_one.like(f'%{date_number_no_one}%')).all()
+        total_cost_1 = sum(float(cost[0]) for cost in costs if cost[0].replace('.', '', 1).isdigit())
+
+        certificates = db.session.query(Service.certificate).filter(Service.date_number_no_one.like(f'%{date_number_no_one}%')).all()
+        total_cost_2 = sum(float(cert[0]) for cert in certificates if cert[0].replace('.', '', 1).isdigit())
+
+        certificates_no = db.session.query(Service.certificate_no).filter(Service.date_number_no_one.like(f'%{date_number_no_one}%')).all()
         total_cost_3 = sum(float(cert_no[0]) for cert_no in certificates_no if cert_no[0].replace('.', '', 1).isdigit())
     else:
         total_cost_1 = db.session.query(db.func.sum(Service.cost)).scalar() or 0
@@ -199,17 +307,19 @@ def skeleton(year, keyword, selected_column, page):
         total_pages=total_pages,
         start_page=start_page,
         end_page=end_page,
-        service_years=service_years
+        service_years=service_years,
+        service_years_date_number_no_one=service_years_date_number_no_one
     )
 
 @app.route('/')
 @login_required
 def index():
+    date_number_no_one = request.args.get('date_number_no_one', None)
     year = request.args.get('year', None)
     keyword = request.args.get('keyword', None)
     selected_column = request.args.get('column', None)
     page = request.args.get('page', 1, type=int)
-    return skeleton(year, keyword, selected_column, page)
+    return skeleton(date_number_no_one, year, keyword, selected_column, page)
 
 @app.route('/edit/<int:id>', methods=['GET'])
 @login_required
