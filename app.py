@@ -164,19 +164,18 @@ def skeleton(date_number_no_one, year, keyword, selected_column, page):
     if date_number_no_one == 'No':
         date_number_no_one = None
 
-    """ДОДЕЛАТЬ ГОДА НОВЫЕ"""
     if year == 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
         query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+    elif year == 'None' and date_number_no_one != 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+        query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))), Service.date_number_no_one.like(f'%{date_number_no_one}%'))
+    elif year != 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+        query = query.filter(not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))), Service.year.like(f'%{year}%'))
     elif year and date_number_no_one:
         # query = query.filter(db.func.year(Service.year) == year)
         query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{date_number_no_one}%'))
-    elif year == 'None' and date_number_no_one != 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-        query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))))
     elif year and not date_number_no_one:
         # query = query.filter(db.func.year(Service.year) == year)
         query = query.filter(Service.year.like(f'%{year}%'))
-    elif year != 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-        query = query.filter(not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
     elif not year and date_number_no_one:
         # query = query.filter(db.func.year(Service.year) == year)
         query = query.filter(Service.date_number_no_one.like(f'%{date_number_no_one}%'))
@@ -810,31 +809,64 @@ def export_excel_task(sid, data):
 
             from sqlalchemy import not_, or_
 
+            # if year == 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+            #     # query = query.filter(Service.year.is_(None) | (Service.year == ''))
+            #     query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+            #     print('POPAL_1')
+            # elif year and year != 'No' and date_number_no_one and date_number_no_one != 'No':
+            #     # query = query.filter(db.func.year(Service.year) == year)
+            #     query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{date_number_no_one}%'))
+            #     print('POPAL_2')
+            # elif year == 'No' and date_number_no_one == 'No':
+            #     year = None
+            #     date_number_no_one = None
+            #     print('POPAL_3')
+            # elif year == 'None' and date_number_no_one != 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+            #     # query = query.filter(Service.year.is_(None) | (Service.year == ''))
+            #     query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))), Service.date_number_no_one.like(f'%{date_number_no_one}%'))
+            #     print('POPAL_4')
+            # elif year and year != 'No' and not date_number_no_one and date_number_no_one == 'No':
+            #     # query = query.filter(db.func.year(Service.year) == year)
+            #     query = query.filter(Service.year.like(f'%{year}%'))
+            #     print('POPAL_5')
+            # elif year == 'No' and date_number_no_one != 'No':
+            #     year = None
+            #     query = query.filter(Service.date_number_no_one.like(f'%{date_number_no_one}%'))
+            #     print('POPAL_6')
+            # elif year != 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+            #     # query = query.filter(Service.year.is_(None) | (Service.year == ''))
+            #     query = query.filter(not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+            #     print('POPAL_7')
+            # elif year == 'No' and date_number_no_one and date_number_no_one != 'No':
+            #     # query = query.filter(db.func.year(Service.year) == year)
+            #     query = query.filter(Service.date_number_no_one.like(f'%{date_number_no_one}%'))
+            #     print('POPAL_8')
+            # elif year != 'No' and date_number_no_one == 'No':
+            #     date_number_no_one = None
+            #     query = query.filter(Service.year.like(f'%{year}%'))
+            #     print('POPAL_9')
+
+            if year == 'No':
+                year = None
+
+            if date_number_no_one == 'No':
+                date_number_no_one = None
+
             if year == 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-                # query = query.filter(Service.year.is_(None) | (Service.year == ''))
                 query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
-            elif year and year != 'No' and date_number_no_one and date_number_no_one != 'No':
+            elif year == 'None' and date_number_no_one != 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+                query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))), Service.date_number_no_one.like(f'%{date_number_no_one}%'))
+            elif year != 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+                query = query.filter(not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))), Service.year.like(f'%{year}%'))
+            elif year and date_number_no_one:
                 # query = query.filter(db.func.year(Service.year) == year)
                 query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{date_number_no_one}%'))
-            elif year == 'No' and date_number_no_one == 'No':
-                year = None
-                date_number_no_one = None
-            elif year == 'None' and date_number_no_one != 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-                # query = query.filter(Service.year.is_(None) | (Service.year == ''))
-                query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))))
-            elif year and year != 'No' and not date_number_no_one and date_number_no_one == 'No':
+            elif year and not date_number_no_one:
                 # query = query.filter(db.func.year(Service.year) == year)
                 query = query.filter(Service.year.like(f'%{year}%'))
-            elif year == 'No' and date_number_no_one != 'No':
-                year = None
-            elif year != 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
-                # query = query.filter(Service.year.is_(None) | (Service.year == ''))
-                query = query.filter(not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
-            elif not year and year == 'No' and date_number_no_one and date_number_no_one != 'No':
+            elif not year and date_number_no_one:
                 # query = query.filter(db.func.year(Service.year) == year)
                 query = query.filter(Service.date_number_no_one.like(f'%{date_number_no_one}%'))
-            elif year != 'No' and date_number_no_one == 'No':
-                date_number_no_one = None
 
             services = query.all()
             print(f"Получено {len(services)} услуг.")
