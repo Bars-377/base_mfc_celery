@@ -45,8 +45,8 @@
                         value="{{ request.args.get('keyword', '') }}">
                 </div>
                 <div class="form-item">
-                    <label for="column">Выберите столбец:</label>
-                    <select name="column" id="column" class="form-control">
+                    <label for="selected_column">Выберите столбец:</label>
+                    <select name="selected_column" id="selected_column" class="form-control">
                         <option value="">Столбец</option>
                         <option value="id_id" {% if selected_column=='id_id' %}selected{% endif %}>№ п/п</option>
                         <option value="name" {% if selected_column=='name' %}selected{% endif %}>ФИО заявителя</option>
@@ -96,8 +96,8 @@
                     <label for="date_number_no_one">Выберите год 2:</label>
                     <select name="date_number_no_one" id="date_number_no_one" class="form-control form-control-year">
                         <option value="No">Год</option>
-                        {% for date_number_no_one in service_years_date_number_no_one %}
-                        <option value="{{ date_number_no_one }}" {% if date_number_no_one==selected_year %}selected{% endif %}>
+                        {% for date_number_no_one in service_date_number_no_one %}
+                        <option value="{{ date_number_no_one }}" {% if date_number_no_one==selected_date_number_no_one %}selected{% endif %}>
                             {{ date_number_no_one }}
                         </option>
                         {% endfor %}
@@ -220,7 +220,7 @@
                         {% if page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=page-1) }}"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=page-1) }}"
                                 aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -231,7 +231,7 @@
                         {% if start_page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=1) }}">1</a>
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=1) }}">1</a>
                         </li>
                         {% if start_page > 2 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -242,7 +242,7 @@
                         {% for p in range(start_page, end_page + 1) %}
                         <li class="page-item {% if p == page %}active{% endif %}">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=p) }}">{{ p }}</a>
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=p) }}">{{ p }}</a>
                         </li>
                         {% endfor %}
 
@@ -252,14 +252,14 @@
                             {% endif %}
                             <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=total_pages) }}">{{
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=total_pages) }}">{{
                                     total_pages }}</a>
                             </li>
                             {% endif %}
 
                             {% if page < total_pages %} <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, column=selected_column, page=page+1) }}"
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=page+1) }}"
                                     aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
@@ -418,8 +418,9 @@
         // Функция сброса фильтров и прокрутки
         function resetFilters() {
             document.getElementById('year').value = '';
+            document.getElementById('date_number_no_one').value = '';
             document.getElementById('keyword').value = '';
-            document.getElementById('column').value = '';
+            document.getElementById('selected_column').value = '';
             document.getElementById('filter-form').submit();
             window.scrollTo(0, 0);
         }
