@@ -186,7 +186,7 @@
                             <td class="stretch-width">
                                 <!-- Управление -->
                                 <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                    <a href="{{ url_for('edit', id=service.id, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year) }}"
+                                    <a href="{{ url_for('edit', id=service.id, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one) }}"
                                         class="btn btn-sm btn-warning">Edit</a>
                                     <form class="delete-form" data-id="{{ service.id }}" style="display:inline;">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
