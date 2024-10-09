@@ -815,25 +815,26 @@ def export_excel_task(sid, data):
                 query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
             elif year and year != 'No' and date_number_no_one and date_number_no_one != 'No':
                 # query = query.filter(db.func.year(Service.year) == year)
-                query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
+                query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{date_number_no_one}%'))
             elif year == 'No' and date_number_no_one == 'No':
                 year = None
+                date_number_no_one = None
             elif year == 'None' and date_number_no_one != 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
                 # query = query.filter(Service.year.is_(None) | (Service.year == ''))
-                query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+                query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd))))
             elif year and year != 'No' and not date_number_no_one and date_number_no_one == 'No':
                 # query = query.filter(db.func.year(Service.year) == year)
-                query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
+                query = query.filter(Service.year.like(f'%{year}%'))
             elif year == 'No' and date_number_no_one != 'No':
                 year = None
             elif year != 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
                 # query = query.filter(Service.year.is_(None) | (Service.year == ''))
-                query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+                query = query.filter(not_(or_(Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
             elif not year and year == 'No' and date_number_no_one and date_number_no_one != 'No':
                 # query = query.filter(db.func.year(Service.year) == year)
-                query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
+                query = query.filter(Service.date_number_no_one.like(f'%{date_number_no_one}%'))
             elif year != 'No' and date_number_no_one == 'No':
-                year = None
+                date_number_no_one = None
 
             services = query.all()
             print(f"Получено {len(services)} услуг.")
