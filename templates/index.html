@@ -120,18 +120,18 @@
                             <th class="stretch-width">СНИЛС</th>
                             <th class="fixed-width">Район</th>
                             <th class="stretch-width">Населённый пункт</th>
-                            <th class="stretch-width">Адрес</th>
+                            <th class="fixed-width">Адрес</th>
                             <th class="fixed-width">Льгота</th>
-                            <th class="stretch-width">Серия и номер</th>
-                            <th class="fixed-width">Дата выдачи сертификата</th>
+                            <th class="fixed-width-medium">Серия и номер</th>
+                            <th class="fixed-width-date">Дата выдачи сертификата</th>
                             <th class="stretch-width">Размер выплаты</th>
-                            <th class="stretch-width">Сертификат</th>
-                            <th class="fixed-width">Дата и номер решения о выдаче</th>
-                            <th class="fixed-width">Дата и № решения об аннулировании</th>
-                            <th class="fixed-width">Дата решения об отказе в выдаче</th>
-                            <th class="fixed-width">№ решения об отказе в выдаче</th>
-                            <th class="stretch-width">Отказ в выдаче</th>
-                            <th class="stretch-width">Основная причина отказа</th>
+                            <th class="fixed-width-small">Сертификат</th>
+                            <th class="fixed-width-date">Дата и номер решения о выдаче</th>
+                            <th class="fixed-width-date">Дата и № решения об аннулировании</th>
+                            <th class="fixed-width-date">Дата решения об отказе в выдаче</th>
+                            <th class="fixed-width-small">№ решения об отказе в выдаче</th>
+                            <th class="fixed-width-small">Отказ в выдаче</th>
+                            <th class="fixed-width-small">Основная причина отказа</th>
                             <th class="stretch-width">ТРЕК</th>
                             <th class="fixed-width">Дата отправки почтой</th>
                             <th class="fixed-width">Комментарий</th>
@@ -157,25 +157,25 @@
                                 service.address }}</td>
                             <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
                                 service.benefit }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                            <td class="fixed-width-medium" style="background-color: {{ service.color or '' }}">{{
                                 service.number }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{ service.year
+                            <td class="fixed-width-date" style="background-color: {{ service.color or '' }}">{{ service.year
                                 }}</td>
                             <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
                                 service.cost }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                            <td class="fixed-width-small" style="background-color: {{ service.color or '' }}">{{
                                 service.certificate }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                            <td class="fixed-width-date" style="background-color: {{ service.color or '' }}">{{
                                 service.date_number_get }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                            <td class="fixed-width-date" style="background-color: {{ service.color or '' }}">{{
                                 service.date_number_cancellation }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                            <td class="fixed-width-date" style="background-color: {{ service.color or '' }}">{{
                                 service.date_number_no_one }}</td>
-                            <td class="fixed-width" style="background-color: {{ service.color or '' }}">{{
+                            <td class="fixed-width-small" style="background-color: {{ service.color or '' }}">{{
                                 service.date_number_no_two }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                            <td class="fixed-width-small" style="background-color: {{ service.color or '' }}">{{
                                 service.certificate_no }}</td>
-                            <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
+                            <td class="fixed-width-small" style="background-color: {{ service.color or '' }}">{{
                                 service.reason }}</td>
                             <td class="stretch-width" style="background-color: {{ service.color or '' }}">{{
                                 service.track }}</td>

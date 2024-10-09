@@ -48,19 +48,25 @@ try:
         if date_match:
             date_value = date_match.group(0)
             remaining_value = value.replace(date_value, '').strip()  # Остальное как номер
-            return date_value, remaining_value
+            return date_value, str(remaining_value).replace(' от', '').strip()
         return '', str(value)
 
-    # def safe_date_conversion(value):
-    #     from dateutil import parser
-    #     if pd.isna(value):
-    #         return None  # Возвращаем None для недопустимых значений
-    #     try:
-    #         # Попробуйте распарсить дату
-    #         parsed_date = parser.parse(str(value), dayfirst=True)
-    #         return parsed_date.strftime('%Y-%m-%d')
-    #     except (ValueError, TypeError):
-    #         return None # Возвращаем None, если не удалось распарсить дату
+    def safe_date_conversion(value):
+        from dateutil import parser
+        if pd.isna(value):
+            return ''  # Возвращаем None для недопустимых значений
+
+        try:
+            # Попробуйте распарсить дату
+            parsed_date = parser.parse(str(value), dayfirst=True)
+            return parsed_date.strftime('%d.%m.%Y')
+        except:
+            try:
+                # Попробуйте распарсить дату
+                parsed_date = parser.parse(str(value), dayfirst=True)
+                return parsed_date.strftime('%Y-%m-%d')
+            except:
+                return str(value) # Возвращаем None, если не удалось распарсить дату
 
     # Функции для преобразования данных
     def safe_conversion(value):
@@ -98,7 +104,7 @@ try:
     df['Адрес'] = df['Адрес'].apply(safe_conversion)
     df['Льгота'] = df['Льгота'].apply(safe_conversion)
     df['Серия и № сертификата'] = df['Серия и № сертификата'].apply(safe_conversion)
-    df['Дата выдачи сертификата'] = df['Дата выдачи сертификата'].apply(safe_conversion)
+    df['Дата выдачи сертификата'] = df['Дата выдачи сертификата'].apply(safe_date_conversion)
     df['Размер выплаты'] = df['Размер выплаты'].apply(safe_float_conversion)
     df['Сертификат'] = df['Сертификат'].apply(safe_int_conversion)
     df['Дата и № решения о выдаче сертификата'] = df['Дата и № решения о выдаче сертификата'].apply(safe_conversion)
@@ -133,7 +139,7 @@ try:
                 safe_conversion(row.get('Адрес')),
                 safe_conversion(row.get('Льгота')),
                 safe_conversion(row.get('Серия и № сертификата')),
-                safe_conversion(row.get('Дата выдачи сертификата')),
+                safe_date_conversion(row.get('Дата выдачи сертификата')),
                 safe_float_conversion(row.get('Размер выплаты')),
                 safe_int_conversion(row.get('Сертификат')),
                 safe_conversion(row.get('Дата и № решения о выдаче сертификата')),
