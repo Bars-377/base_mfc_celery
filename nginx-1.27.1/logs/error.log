@@ -55,3 +55,23 @@
 2024/09/19 16:15:40 [error] 14048#9044: CreateFile() "C:\Users\neverov\Desktop\base_mfc\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
 2024/09/19 16:15:41 [notice] 15128#8912: signal process started
 2024/09/19 16:15:41 [error] 15128#8912: CreateFile() "C:\Users\neverov\Desktop\base_mfc\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:22:07 [emerg] 10836#8408: CreateDirectory() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2024/10/09 14:22:47 [notice] 14136#13284: signal process started
+2024/10/09 14:22:47 [error] 14136#13284: CreateFile() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:22:48 [notice] 1780#13908: signal process started
+2024/10/09 14:22:48 [error] 1780#13908: CreateFile() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:22:49 [notice] 5524#576: signal process started
+2024/10/09 14:22:49 [error] 5524#576: CreateFile() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:27:40 [emerg] 10116#9268: CreateDirectory() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2024/10/09 14:28:19 [notice] 8960#10636: signal process started
+2024/10/09 14:28:19 [error] 8960#10636: CreateFile() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:28:19 [notice] 6860#7572: signal process started
+2024/10/09 14:28:19 [error] 6860#7572: CreateFile() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:28:20 [notice] 8980#14036: signal process started
+2024/10/09 14:28:20 [error] 8980#14036: CreateFile() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:28:43 [emerg] 13812#8660: CreateDirectory() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/temp/client_body_temp" failed (3: The system cannot find the path specified)
+2024/10/09 14:33:20 [notice] 1228#12520: signal process started
+2024/10/09 14:33:20 [error] 1228#12520: CreateFile() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:33:20 [notice] 12216#3936: signal process started
+2024/10/09 14:33:20 [error] 12216#3936: CreateFile() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/10/09 14:33:21 [emerg] 6820#6024: CreateDirectory() "C:\Users\neverov\Desktop\base_mfc_celery\nginx-1.27.1/temp/client_body_temp" failed (3: The system cannot find the path specified)

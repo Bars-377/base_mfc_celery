@@ -82,7 +82,7 @@
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="year">Дата выдачи:</label>
+                    <label for="year">Дата сертификата:</label>
                     <select name="year" id="year" class="form-control form-control-year">
                         <option value="No">Год</option>
                         {% for year in service_years %}
@@ -93,7 +93,7 @@
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="date_number_no_one">Дата решения:</label>
+                    <label for="date_number_no_one">Дата отказа:</label>
                     <select name="date_number_no_one" id="date_number_no_one" class="form-control form-control-year">
                         <option value="No">Год</option>
                         {% for date_number_no_one in service_date_number_no_one %}
@@ -220,7 +220,7 @@
                         {% if page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=page-1) }}"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=page-1) }}"
                                 aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -231,7 +231,7 @@
                         {% if start_page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=1) }}">1</a>
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=1) }}">1</a>
                         </li>
                         {% if start_page > 2 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -242,7 +242,7 @@
                         {% for p in range(start_page, end_page + 1) %}
                         <li class="page-item {% if p == page %}active{% endif %}">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=p) }}">{{ p }}</a>
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=p) }}">{{ p }}</a>
                         </li>
                         {% endfor %}
 
@@ -252,14 +252,14 @@
                             {% endif %}
                             <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=total_pages) }}">{{
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=total_pages) }}">{{
                                     total_pages }}</a>
                             </li>
                             {% endif %}
 
                             {% if page < total_pages %} <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, page=page+1) }}"
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=page+1) }}"
                                     aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
@@ -275,7 +275,7 @@
             <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
             <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
             <br>
-            <a href="{{ url_for('add_edit', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, total_pages=total_pages) }}" class="btn btn-warning">Добавить данные</a>
+            <a href="{{ url_for('add_edit', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages) }}" class="btn btn-warning">Добавить данные</a>
             <br>
             <h1>Экспорт услуг в Excel</h1>
             <br>
