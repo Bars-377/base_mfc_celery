@@ -220,7 +220,7 @@
                         {% if page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=page-1) }}"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=page-1) }}"
                                 aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -231,7 +231,7 @@
                         {% if start_page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=1) }}">1</a>
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=1) }}">1</a>
                         </li>
                         {% if start_page > 2 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -242,7 +242,7 @@
                         {% for p in range(start_page, end_page + 1) %}
                         <li class="page-item {% if p == page %}active{% endif %}">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=p) }}">{{ p }}</a>
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=p) }}">{{ p }}</a>
                         </li>
                         {% endfor %}
 
@@ -252,14 +252,14 @@
                             {% endif %}
                             <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=total_pages) }}">{{
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=total_pages) }}">{{
                                     total_pages }}</a>
                             </li>
                             {% endif %}
 
                             {% if page < total_pages %} <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, selected_date_number_no_one=selected_date_number_no_one, page=page+1) }}"
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=page+1) }}"
                                     aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
