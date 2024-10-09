@@ -282,6 +282,7 @@
 
             <form id="export-form" onsubmit="showFlashMessage(event)">
                 <input type="hidden" name="year" value="{{ selected_year if selected_year else 'No' }}">
+                <input type="hidden" name="date_number_no_one" value="{{ selected_date_number_no_one if selected_date_number_no_one else 'No' }}">
                 <div class="alert alert-success" id="flash-message" style="display: none;"></div>
                 <button type="submit" class="btn btn-info" id="export-button">Экспорт в Excel</button>
             </form>
@@ -309,10 +310,10 @@
             const exportButton = document.getElementById('export-button');
             let requestInProgress = false; // Флаг, указывающий на статус запроса
             let taskId = null; // ID задачи Celery
-            
+
             exportButton.onclick = function (event) {
                 event.preventDefault();  // Предотвращаем стандартное поведение кнопки
-                
+
                 // Проверяем, есть ли уже активный запрос
                 if (requestInProgress) {
                     console.log('Запрос уже выполняется, новая отправка отменена'); // Лог если запрос в процессе
@@ -322,7 +323,7 @@
                 // Устанавливаем флаг, что запрос начат
                 requestInProgress = true;
                 console.log('Запрос на экспорт начат'); // Лог начала запроса
-                
+
                 // Отображаем сообщение сразу после нажатия на кнопку
                 const flashMessage = document.getElementById('flash-message');
                 flashMessage.innerText = 'Пожалуйста, подождите, идёт загрузка!';
@@ -334,10 +335,11 @@
 
                 // Извлекаем значение года из FormData
                 const year = formData.get('year');
+                const date_number_no_one = formData.get('date_number_no_one');
                 console.log(`Отправка запроса на экспорт для года: ${year}`); // Лог года
 
                 // Отправляем запрос на сервер через WebSocket
-                socket.emit('export_excel', { year: year });
+                socket.emit('export_excel', { year: year, date_number_no_one: date_number_no_one });
             };
 
             // Обработка события 'export_started' от сервера, где передается task_id
@@ -385,9 +387,9 @@
 
                 // Обработка потери соединения
                 socket.once('task_status_pending', function() {
-                    console.log('Ожидайте. Очень большой объём файла!'); // Лог потери соединения
+                    console.log('В ожидании.. Очень большой объём файла!'); // Лог потери соединения
                     const flashMessage = document.getElementById('flash-message');
-                    flashMessage.innerText = 'В ожидании.';
+                    flashMessage.innerText = 'В ожидании.. Очень большой объём файла!';
                     flashMessage.style.display = 'block';
                 });
 

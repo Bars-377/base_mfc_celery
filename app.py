@@ -335,6 +335,7 @@ def edit(id):
     keyword = request.args.get('keyword', '')
     selected_column = request.args.get('selected_column', "")
     selected_year = request.args.get('selected_year', 'No')
+    selected_date_number_no_one = request.args.get('selected_date_number_no_one', 'No')
 
     # print('EDIT')
     # print(page)
@@ -343,7 +344,7 @@ def edit(id):
     # print(selected_year)
 
     service = Service.query.get_or_404(id)
-    return render_template('edit.html', service=service, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year)
+    return render_template('edit.html', service=service, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one)
 
 @app.route('/add_edit', methods=['GET'])
 @login_required
@@ -353,6 +354,7 @@ def add_edit():
     keyword = request.args.get('keyword', '')
     selected_column = request.args.get('selected_column', "")
     selected_year = request.args.get('selected_year', 'No')
+    selected_date_number_no_one = request.args.get('selected_date_number_no_one', 'No')
     total_pages = request.args.get('total_pages', 1, type=int)
 
     # print('ADD_EDIT')
@@ -361,7 +363,7 @@ def add_edit():
     # print(selected_column)
     # print(selected_year)
 
-    return render_template('add.html', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, total_pages=total_pages)
+    return render_template('add.html', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages)
 
 @app.route('/edit/<int:id>', methods=['POST'])
 @login_required
@@ -487,9 +489,9 @@ def update(id):
     page = request.args.get('page', 1, type=int)
     keyword = request.args.get('keyword', '')
     selected_column = request.args.get('selected_column', "")
-
-    year = None
-    return skeleton(year, keyword, selected_column, page)
+    year = request.args.get('year', "")
+    date_number_no_one = request.args.get('date_number_no_one', "")
+    return skeleton(date_number_no_one, year, keyword, selected_column, page)
 
 
 @app.route('/update-color/<int:id>', methods=['POST'])
@@ -649,10 +651,11 @@ def add():
     """---------------------------------"""
 
     year = None
+    date_number_no_one = None
     keyword = None
     selected_column = None
     page = total_pages
-    return skeleton(year, keyword, selected_column, page)
+    return skeleton(date_number_no_one, year, keyword, selected_column, page)
 
 # @app.route('/export-excel', methods=['GET'])
 # @login_required
@@ -795,6 +798,8 @@ def export_excel_task(sid, data):
 
             year = data.get('year', None)
 
+            date_number_no_one = data.get('date_number_no_one', None)
+
             query = Service.query
 
             # Регулярное выражение для формата "DD.MM.YYYY"
@@ -805,13 +810,29 @@ def export_excel_task(sid, data):
 
             from sqlalchemy import not_, or_
 
-            if year == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+            if year == 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
                 # query = query.filter(Service.year.is_(None) | (Service.year == ''))
                 query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
-            elif year and year != 'No':
+            elif year and year != 'No' and date_number_no_one and date_number_no_one != 'No':
                 # query = query.filter(db.func.year(Service.year) == year)
                 query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
-            elif year == 'No':
+            elif year == 'No' and date_number_no_one == 'No':
+                year = None
+            elif year == 'None' and date_number_no_one != 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+                # query = query.filter(Service.year.is_(None) | (Service.year == ''))
+                query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+            elif year and year != 'No' and not date_number_no_one and date_number_no_one == 'No':
+                # query = query.filter(db.func.year(Service.year) == year)
+                query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
+            elif year == 'No' and date_number_no_one != 'No':
+                year = None
+            elif year != 'None' and date_number_no_one == 'None':  # Если year == 'None', фильтруем записи, у которых год == NULL
+                # query = query.filter(Service.year.is_(None) | (Service.year == ''))
+                query = query.filter(not_(or_(Service.year.op('regexp')(pattern_dd_mm_yyyy), Service.year.op('regexp')(pattern_yyyy_mm_dd), Service.date_number_no_one.op('regexp')(pattern_dd_mm_yyyy), Service.date_number_no_one.op('regexp')(pattern_yyyy_mm_dd))))
+            elif not year and year == 'No' and date_number_no_one and date_number_no_one != 'No':
+                # query = query.filter(db.func.year(Service.year) == year)
+                query = query.filter(Service.year.like(f'%{year}%') | Service.date_number_no_one.like(f'%{year}%'))
+            elif year != 'No' and date_number_no_one == 'No':
                 year = None
 
             services = query.all()
