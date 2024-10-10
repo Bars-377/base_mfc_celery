@@ -120,9 +120,9 @@ try:
     INSERT INTO services (
         id_id, name, snils, location, address_p, address, benefit, number, year, cost,
         certificate, date_number_get, date_number_cancellation, date_number_no_one, date_number_no_two,
-        certificate_no, reason, track, date_post, comment
+        certificate_no, reason, track, date_post, comment, color
     ) VALUES (
-        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+        %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
     )
     """
 
@@ -130,6 +130,11 @@ try:
     data_to_insert = []
     for _, row in df.iterrows():
         if pd.notna(row.get('ФИО заявителя')) and row.get('ФИО заявителя').strip():
+            # Проверяем значение 'Сертификат' для заполнения колонки 'Цвет'
+            certificate_value = safe_int_conversion(row.get('Сертификат'))
+            refusal_value = safe_int_conversion(row.get('Отказ в выдаче сертификата'))
+            color_value = "#dff0d8" if certificate_value == "0" and refusal_value == '0' else ""
+
             data_row = (
                 safe_conversion(row.get('№ п/п')),
                 safe_conversion(row.get('ФИО заявителя')),
@@ -152,7 +157,8 @@ try:
                 safe_conversion(row.get('Основная причина отказа (пункт)')),
                 safe_conversion(row.get('ТРЕК')),
                 safe_conversion(row.get('Дата отправки почтой')),
-                ""  # Пустая строка для поля 'comment'
+                "",  # Пустая строка для поля 'comment'
+                color_value
             )
 
             data_to_insert.append(data_row)
