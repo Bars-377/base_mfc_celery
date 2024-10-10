@@ -139,6 +139,7 @@
             </div>
             <br>
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
+            <input type="hidden" name="color" value="{{ service.color }}">  <!-- Скрытое поле цвета -->
             <!-- Кнопка для отправки формы -->
             <button type="submit" class="btn btn-primary btn-neverov">Внести изменения</button>
             <!-- Ссылка для возврата на главную страницу -->

@@ -480,6 +480,9 @@ def update(id):
     service.comment = request.form['comment']
     service.color = request.form.get('color')
 
+    if service.certificate == '0' and service.certificate_no == '0':
+        service.color = '#dff0d8'
+
     db.session.commit()
     flash('Данные успешно обновлены!', 'success')
     # return redirect(url_for('index'))
@@ -630,6 +633,9 @@ def add():
 
     comment = request.form['comment']
     color = request.form.get('color')
+
+    if certificate == '0' and certificate_no == '0':
+        color = '#dff0d8'
 
     from sqlalchemy import cast, Integer
     latest_service = Service.query.order_by(cast(Service.id_id, Integer).desc()).first()
