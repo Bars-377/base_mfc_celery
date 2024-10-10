@@ -45,40 +45,77 @@
                         value="{{ request.args.get('keyword', '') }}">
                 </div>
                 <div class="form-item">
-                    <label for="selected_column">Выберите столбец:</label>
-                    <select name="selected_column" id="selected_column" class="form-control">
+                    <label for="selected_column_one">Выберите столбец:</label>
+                    <select name="selected_column_one" id="selected_column_one" class="form-control">
                         <option value="">Столбец</option>
-                        <option value="id_id" {% if selected_column=='id_id' %}selected{% endif %}>№ п/п</option>
-                        <option value="name" {% if selected_column=='name' %}selected{% endif %}>ФИО заявителя</option>
-                        <option value="snils" {% if selected_column=='snils' %}selected{% endif %}>СНИЛС</option>
-                        <option value="location" {% if selected_column=='location' %}selected{% endif %}>Район</option>
-                        <option value="address_p" {% if selected_column=='address_p' %}selected{% endif %}>Населённый
+                        <option value="id_id" {% if selected_column_one=='id_id' %}selected{% endif %}>№ п/п</option>
+                        <option value="name" {% if selected_column_one=='name' %}selected{% endif %}>ФИО заявителя</option>
+                        <option value="snils" {% if selected_column_one=='snils' %}selected{% endif %}>СНИЛС</option>
+                        <option value="location" {% if selected_column_one=='location' %}selected{% endif %}>Район</option>
+                        <option value="address_p" {% if selected_column_one=='address_p' %}selected{% endif %}>Населённый
                             пункт</option>
-                        <option value="address" {% if selected_column=='address' %}selected{% endif %}>Адрес</option>
-                        <option value="benefit" {% if selected_column=='benefit' %}selected{% endif %}>Льгота</option>
-                        <option value="number" {% if selected_column=='number' %}selected{% endif %}>Серия и номер
+                        <option value="address" {% if selected_column_one=='address' %}selected{% endif %}>Адрес</option>
+                        <option value="benefit" {% if selected_column_one=='benefit' %}selected{% endif %}>Льгота</option>
+                        <option value="number" {% if selected_column_one=='number' %}selected{% endif %}>Серия и номер
                         </option>
-                        <option value="year" {% if selected_column=='year' %}selected{% endif %}>Дата выдачи сертификата
+                        <option value="year" {% if selected_column_one=='year' %}selected{% endif %}>Дата выдачи сертификата
                         </option>
-                        <option value="cost" {% if selected_column=='cost' %}selected{% endif %}>Размер выплаты</option>
-                        <option value="certificate" {% if selected_column=='certificate' %}selected{% endif %}>
+                        <option value="cost" {% if selected_column_one=='cost' %}selected{% endif %}>Размер выплаты</option>
+                        <option value="certificate" {% if selected_column_one=='certificate' %}selected{% endif %}>
                             Сертификат</option>
-                        <option value="date_number_get" {% if selected_column=='date_number_get' %}selected{% endif %}>
+                        <option value="date_number_get" {% if selected_column_one=='date_number_get' %}selected{% endif %}>
                             Дата и номер решения о выдаче</option>
-                        <option value="date_number_cancellation" {% if selected_column=='date_number_cancellation'
+                        <option value="date_number_cancellation" {% if selected_column_one=='date_number_cancellation'
                             %}selected{% endif %}>Дата и № решения об аннулировании</option>
-                        <option value="date_number_no_one" {% if selected_column=='date_number_no' %}selected{% endif %}>
+                        <option value="date_number_no_one" {% if selected_column_one=='date_number_no' %}selected{% endif %}>
                             Дата решения об отказе в выдаче</option>
-                        <option value="date_number_no_two" {% if selected_column=='date_number_no' %}selected{% endif %}>
+                        <option value="date_number_no_two" {% if selected_column_one=='date_number_no' %}selected{% endif %}>
                             № решения об отказе в выдаче</option>
-                        <option value="certificate_no" {% if selected_column=='certificate_no' %}selected{% endif %}>
+                        <option value="certificate_no" {% if selected_column_one=='certificate_no' %}selected{% endif %}>
                             Отказ в выдаче</option>
-                        <option value="reason" {% if selected_column=='reason' %}selected{% endif %}>Основная причина
+                        <option value="reason" {% if selected_column_one=='reason' %}selected{% endif %}>Основная причина
                             отказа</option>
-                        <option value="track" {% if selected_column=='track' %}selected{% endif %}>ТРЕК</option>
-                        <option value="date_post" {% if selected_column=='date_post' %}selected{% endif %}>Дата отправки
+                        <option value="track" {% if selected_column_one=='track' %}selected{% endif %}>ТРЕК</option>
+                        <option value="date_post" {% if selected_column_one=='date_post' %}selected{% endif %}>Дата отправки
                             почтой</option>
-                        <option value="comment" {% if selected_column=='comment' %}selected{% endif %}>Комментарий</option>
+                        <option value="comment" {% if selected_column_one=='comment' %}selected{% endif %}>Комментарий</option>
+                    </select>
+                </div>
+                <div class="form-item">
+                    <label for="selected_column_two">Выберите столбец:</label>
+                    <select name="selected_column_two" id="selected_column_two" class="form-control">
+                        <option value="">Столбец</option>
+                        <option value="id_id" {% if selected_column_two=='id_id' %}selected{% endif %}>№ п/п</option>
+                        <option value="name" {% if selected_column_two=='name' %}selected{% endif %}>ФИО заявителя</option>
+                        <option value="snils" {% if selected_column_two=='snils' %}selected{% endif %}>СНИЛС</option>
+                        <option value="location" {% if selected_column_two=='location' %}selected{% endif %}>Район</option>
+                        <option value="address_p" {% if selected_column_two=='address_p' %}selected{% endif %}>Населённый
+                            пункт</option>
+                        <option value="address" {% if selected_column_two=='address' %}selected{% endif %}>Адрес</option>
+                        <option value="benefit" {% if selected_column_two=='benefit' %}selected{% endif %}>Льгота</option>
+                        <option value="number" {% if selected_column_two=='number' %}selected{% endif %}>Серия и номер
+                        </option>
+                        <option value="year" {% if selected_column_two=='year' %}selected{% endif %}>Дата выдачи сертификата
+                        </option>
+                        <option value="cost" {% if selected_column_two=='cost' %}selected{% endif %}>Размер выплаты</option>
+                        <option value="certificate" {% if selected_column_two=='certificate' %}selected{% endif %}>
+                            Сертификат</option>
+                        <option value="date_number_get" {% if selected_column_two=='date_number_get' %}selected{% endif %}>
+                            Дата и номер решения о выдаче</option>
+                        <option value="date_number_cancellation" {% if selected_column_two=='date_number_cancellation'
+                            %}selected{% endif %}>Дата и № решения об аннулировании</option>
+                        <option value="date_number_no_one" {% if selected_column_two=='date_number_no' %}selected{% endif %}>
+                            Дата решения об отказе в выдаче</option>
+                        <option value="date_number_no_two" {% if selected_column_two=='date_number_no' %}selected{% endif %}>
+                            № решения об отказе в выдаче</option>
+                        <option value="certificate_no" {% if selected_column_two=='certificate_no' %}selected{% endif %}>
+                            Отказ в выдаче</option>
+                        <option value="reason" {% if selected_column_two=='reason' %}selected{% endif %}>Основная причина
+                            отказа</option>
+                        <option value="track" {% if selected_column_two=='track' %}selected{% endif %}>ТРЕК</option>
+                        <option value="date_post" {% if selected_column_two=='date_post' %}selected{% endif %}>Дата отправки
+                            почтой</option>
+                        <option value="comment" {% if selected_column_two=='comment' %}selected{% endif %}>Комментарий</option>
                     </select>
                 </div>
                 <div class="form-item">
@@ -186,7 +223,7 @@
                             <td class="stretch-width">
                                 <!-- Управление -->
                                 <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                    <a href="{{ url_for('edit', id=service.id, page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one) }}"
+                                    <a href="{{ url_for('edit', id=service.id, page=page, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one) }}"
                                         class="btn btn-sm btn-warning">Edit</a>
                                     <form class="delete-form" data-id="{{ service.id }}" style="display:inline;">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
@@ -220,7 +257,7 @@
                         {% if page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=page-1) }}"
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=page-1) }}"
                                 aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -231,7 +268,7 @@
                         {% if start_page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=1) }}">1</a>
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=1) }}">1</a>
                         </li>
                         {% if start_page > 2 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -242,7 +279,7 @@
                         {% for p in range(start_page, end_page + 1) %}
                         <li class="page-item {% if p == page %}active{% endif %}">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=p) }}">{{ p }}</a>
+                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=p) }}">{{ p }}</a>
                         </li>
                         {% endfor %}
 
@@ -252,14 +289,14 @@
                             {% endif %}
                             <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=total_pages) }}">{{
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=total_pages) }}">{{
                                     total_pages }}</a>
                             </li>
                             {% endif %}
 
                             {% if page < total_pages %} <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column=selected_column, date_number_no_one=selected_date_number_no_one, page=page+1) }}"
+                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=page+1) }}"
                                     aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
@@ -275,7 +312,7 @@
             <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
             <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
             <br>
-            <a href="{{ url_for('add_edit', page=page, keyword=keyword, selected_column=selected_column, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages) }}" class="btn btn-warning">Добавить данные</a>
+            <a href="{{ url_for('add_edit', page=page, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages) }}" class="btn btn-warning">Добавить данные</a>
             <br>
             <h1>Экспорт услуг в Excel</h1>
             <br>
@@ -426,7 +463,8 @@
             document.getElementById('year').value = '';
             document.getElementById('date_number_no_one').value = '';
             document.getElementById('keyword').value = '';
-            document.getElementById('selected_column').value = '';
+            document.getElementById('selected_column_one').value = '';
+            document.getElementById('selected_column_two').value = '';
 
             // Добавляем текущую страницу как скрытое поле
             const pageInput = document.createElement('input');
