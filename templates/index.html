@@ -419,11 +419,26 @@
 
         // Функция сброса фильтров и прокрутки
         function resetFilters() {
+            // Получаем текущую страницу
+            const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
+
+            // Сбрасываем значения фильтров
             document.getElementById('year').value = '';
             document.getElementById('date_number_no_one').value = '';
             document.getElementById('keyword').value = '';
             document.getElementById('selected_column').value = '';
-            document.getElementById('filter-form').submit();
+
+            // Добавляем текущую страницу как скрытое поле
+            const pageInput = document.createElement('input');
+            pageInput.type = 'hidden';
+            pageInput.name = 'page';
+            pageInput.value = currentPage;
+
+            const form = document.getElementById('filter-form');
+            form.appendChild(pageInput);
+
+            // Отправляем форму
+            form.submit();
             window.scrollTo(0, 0);
         }
 
