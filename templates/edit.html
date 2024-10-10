@@ -32,7 +32,7 @@
         {% endwith %}
 
         <!-- Форма для редактирования услуги -->
-        <form method="POST" action="{{ url_for('update', id=service.id, page=page, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, year=selected_year, date_number_no_one=selected_date_number_no_one) }}" class="form-group">
+        <form method="POST" action="{{ url_for('update', id=service.id, page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, year=selected_year, date_number_no_one=selected_date_number_no_one) }}" class="form-group">
             <!-- Поле для ввода названия услуги -->
             <div class="form-item">
                 <label for="id_id">№ п/п</label>
@@ -143,7 +143,7 @@
             <!-- Кнопка для отправки формы -->
             <button type="submit" class="btn btn-primary btn-neverov">Внести изменения</button>
             <!-- Ссылка для возврата на главную страницу -->
-            <a href="{{ url_for('index', page=page, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, year=selected_year, date_number_no_one=selected_date_number_no_one) }}" class="btn btn-secondary btn-neverov mt-3">Вернуться назад</a>
+            <a href="{{ url_for('index', page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, year=selected_year, date_number_no_one=selected_date_number_no_one) }}" class="btn btn-secondary btn-neverov mt-3">Вернуться назад</a>
         </form>
 
     </div>

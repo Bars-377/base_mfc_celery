@@ -16,7 +16,6 @@
 
 <body>
 
-
     <div class="center-content">
         <div class="container-fluid-neverov">
 
@@ -40,12 +39,12 @@
 
             <form method="GET" action="/" id="filter-form" class="form-group">
                 <div class="form-item">
-                    <label for="keyword">Поиск по ключевому слову:</label>
-                    <input type="text" class="form-control" id="keyword" name="keyword" placeholder="Ключевое слово"
-                        value="{{ request.args.get('keyword', '') }}">
+                    <label for="keyword_one">Поиск по ключевому слову 1:</label>
+                    <input type="text" class="form-control" id="keyword_one" name="keyword_one" placeholder="Ключевое слово"
+                        value="{{ request.args.get('keyword_one', '') }}">
                 </div>
                 <div class="form-item">
-                    <label for="selected_column_one">Выберите столбец:</label>
+                    <label for="selected_column_one">Выберите столбец 1:</label>
                     <select name="selected_column_one" id="selected_column_one" class="form-control">
                         <option value="">Столбец</option>
                         <option value="id_id" {% if selected_column_one=='id_id' %}selected{% endif %}>№ п/п</option>
@@ -82,7 +81,12 @@
                     </select>
                 </div>
                 <div class="form-item">
-                    <label for="selected_column_two">Выберите столбец:</label>
+                    <label for="keyword_two">Поиск по ключевому слову 2:</label>
+                    <input type="text" class="form-control" id="keyword_two" name="keyword_two" placeholder="Ключевое слово"
+                        value="{{ request.args.get('keyword_two', '') }}">
+                </div>
+                <div class="form-item">
+                    <label for="selected_column_two">Выберите столбец 2:</label>
                     <select name="selected_column_two" id="selected_column_two" class="form-control">
                         <option value="">Столбец</option>
                         <option value="id_id" {% if selected_column_two=='id_id' %}selected{% endif %}>№ п/п</option>
@@ -223,7 +227,7 @@
                             <td class="stretch-width">
                                 <!-- Управление -->
                                 <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                                    <a href="{{ url_for('edit', id=service.id, page=page, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one) }}"
+                                    <a href="{{ url_for('edit', id=service.id, page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one) }}"
                                         class="btn btn-sm btn-warning">Edit</a>
                                     <form class="delete-form" data-id="{{ service.id }}" style="display:inline;">
                                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
@@ -257,7 +261,7 @@
                         {% if page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=page-1) }}"
+                                href="{{ url_for('index', year=selected_year, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=page-1) }}"
                                 aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
@@ -268,7 +272,7 @@
                         {% if start_page > 1 %}
                         <li class="page-item">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=1) }}">1</a>
+                                href="{{ url_for('index', year=selected_year, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=1) }}">1</a>
                         </li>
                         {% if start_page > 2 %}
                         <li class="page-item disabled"><span class="page-link">...</span></li>
@@ -279,7 +283,7 @@
                         {% for p in range(start_page, end_page + 1) %}
                         <li class="page-item {% if p == page %}active{% endif %}">
                             <a class="page-link"
-                                href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=p) }}">{{ p }}</a>
+                                href="{{ url_for('index', year=selected_year, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=p) }}">{{ p }}</a>
                         </li>
                         {% endfor %}
 
@@ -289,14 +293,14 @@
                             {% endif %}
                             <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=total_pages) }}">{{
+                                    href="{{ url_for('index', year=selected_year, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=total_pages) }}">{{
                                     total_pages }}</a>
                             </li>
                             {% endif %}
 
                             {% if page < total_pages %} <li class="page-item">
                                 <a class="page-link"
-                                    href="{{ url_for('index', year=selected_year, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=page+1) }}"
+                                    href="{{ url_for('index', year=selected_year, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, date_number_no_one=selected_date_number_no_one, page=page+1) }}"
                                     aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
@@ -312,7 +316,7 @@
             <h4>Итог сертификатов за выбранное время: {{ total_cost_2 }}</h4>
             <h4>Итог отказов в выдаче за выбранное время: {{ total_cost_3 }}</h4>
             <br>
-            <a href="{{ url_for('add_edit', page=page, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages) }}" class="btn btn-warning">Добавить данные</a>
+            <a href="{{ url_for('add_edit', page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages) }}" class="btn btn-warning">Добавить данные</a>
             <br>
             <h1>Экспорт услуг в Excel</h1>
             <br>
@@ -462,7 +466,8 @@
             // Сбрасываем значения фильтров
             document.getElementById('year').value = '';
             document.getElementById('date_number_no_one').value = '';
-            document.getElementById('keyword').value = '';
+            document.getElementById('keyword_one').value = '';
+            document.getElementById('keyword_two').value = '';
             document.getElementById('selected_column_one').value = '';
             document.getElementById('selected_column_two').value = '';
 
@@ -551,9 +556,12 @@
         // Обработчик нажатия на кнопку фильтрации
         document.getElementById('filter-form').addEventListener('submit', function (event) {
             window.scrollTo(0, 0);
-            // Обрезаем пробелы с двух сторон поля ввода
-            var keywordInput = document.getElementById('keyword');
-            keywordInput.value = keywordInput.value.trim();
+            // Обрезаем пробелы с двух сторон поля ввода 1
+            var keywordInput_one = document.getElementById('keyword_one');
+            keywordInput_one.value = keywordInput_one.value.trim();
+            // Обрезаем пробелы с двух сторон поля ввода 2
+            var keywordInput_two = document.getElementById('keyword_two');
+            keywordInput_two.value = keywordInput_two.value.trim();
         });
 
         document.addEventListener('DOMContentLoaded', function () {

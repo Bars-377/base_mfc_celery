@@ -63,7 +63,7 @@ def login():
         flash('Неверное имя пользователя или пароль!', 'danger')
     return render_template('login.html')
 
-def skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page):
+def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page):
     per_page = 20
 
     import re
@@ -180,20 +180,22 @@ def skeleton(date_number_no_one, year, keyword, selected_column_one, selected_co
         # query = query.filter(db.func.year(Service.year) == year)
         query = query.filter(Service.date_number_no_one.like(f'%{date_number_no_one}%'))
 
-    if keyword:
-        if selected_column_one and hasattr(Service, selected_column_one) and selected_column_two and hasattr(Service, selected_column_two):
-            column_one = getattr(Service, selected_column_one)
-            column_two = getattr(Service, selected_column_two)
-            query = query.filter(db.or_(column_one.like(f'%{keyword}%'), column_two.like(f'%{keyword}%')))
-        elif selected_column_one and hasattr(Service, selected_column_one):
+    if keyword_one:
+        if selected_column_one and hasattr(Service, selected_column_one):
             column = getattr(Service, selected_column_one)
-            query = query.filter(column.like(f'%{keyword}%'))
-        elif selected_column_two and hasattr(Service, selected_column_two):
-            column = getattr(Service, selected_column_two)
-            query = query.filter(column.like(f'%{keyword}%'))
+            query = query.filter(column.like(f'%{keyword_one}%'))
         else:
             columns = [c for c in Service.__table__.columns.keys()]
-            filters = [getattr(Service, col).like(f'%{keyword}%') for col in columns]
+            filters = [getattr(Service, col).like(f'%{keyword_one}%') for col in columns]
+            query = query.filter(db.or_(*filters))
+
+    if keyword_two:
+        if selected_column_two and hasattr(Service, selected_column_two):
+            column = getattr(Service, selected_column_two)
+            query = query.filter(column.like(f'%{keyword_two}%'))
+        else:
+            columns = [c for c in Service.__table__.columns.keys()]
+            filters = [getattr(Service, col).like(f'%{keyword_two}%') for col in columns]
             query = query.filter(db.or_(*filters))
 
     """Сортировка в cast(Service.id_id, Integer).asc() идёт с преобразованием в Integer"""
@@ -315,7 +317,8 @@ def skeleton(date_number_no_one, year, keyword, selected_column_one, selected_co
         selected_date_number_no_one=date_number_no_one,
         selected_column_one=selected_column_one,
         selected_column_two=selected_column_two,
-        keyword=keyword,
+        keyword_one=keyword_one,
+        keyword_two=keyword_two,
         page=page,
         total_pages=total_pages,
         start_page=start_page,
@@ -329,18 +332,20 @@ def skeleton(date_number_no_one, year, keyword, selected_column_one, selected_co
 def index():
     date_number_no_one = request.args.get('date_number_no_one', None)
     year = request.args.get('year', None)
-    keyword = request.args.get('keyword', None)
+    keyword_one = request.args.get('keyword_one', None)
+    keyword_two = request.args.get('keyword_two', None)
     selected_column_one=request.args.get('selected_column_one', None)
     selected_column_two=request.args.get('selected_column_two', None)
     page = request.args.get('page', 1, type=int)
-    return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
 @app.route('/edit/<int:id>', methods=['GET'])
 @login_required
 def edit(id):
 
     page = request.args.get('page', 1, type=int)
-    keyword = request.args.get('keyword', '')
+    keyword_one = request.args.get('keyword_one', None)
+    keyword_two = request.args.get('keyword_two', None)
     selected_column_one=request.args.get('selected_column_one', None)
     selected_column_two=request.args.get('selected_column_two', None)
     selected_year = request.args.get('selected_year', 'No')
@@ -353,14 +358,15 @@ def edit(id):
     # print(selected_year)
 
     service = Service.query.get_or_404(id)
-    return render_template('edit.html', service=service, page=page, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one)
+    return render_template('edit.html', service=service, page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one)
 
 @app.route('/add_edit', methods=['GET'])
 @login_required
 def add_edit():
 
     page = request.args.get('page', 1, type=int)
-    keyword = request.args.get('keyword', '')
+    keyword_one = request.args.get('keyword_one', None)
+    keyword_two = request.args.get('keyword_two', None)
     selected_column_one=request.args.get('selected_column_one', None)
     selected_column_two=request.args.get('selected_column_two', None)
     selected_year = request.args.get('selected_year', 'No')
@@ -373,7 +379,7 @@ def add_edit():
     # print(selected_column)
     # print(selected_year)
 
-    return render_template('add.html', page=page, keyword=keyword, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages)
+    return render_template('add.html', page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages)
 
 @app.route('/edit/<int:id>', methods=['POST'])
 @login_required
@@ -412,13 +418,14 @@ def update(id):
         """---------------------------------"""
 
         page = request.args.get('page', 1, type=int)
-        keyword = request.args.get('keyword', '')
+        keyword_one = request.args.get('keyword_one', None)
+        keyword_two = request.args.get('keyword_two', None)
         selected_column_one=request.args.get('selected_column_one', None)
         selected_column_two=request.args.get('selected_column_two', None)
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
     service.cost = request.form['cost']
     service.certificate = request.form['certificate']
@@ -436,26 +443,28 @@ def update(id):
                 """---------------------------------"""
 
                 page = request.args.get('page', 1, type=int)
-                keyword = request.args.get('keyword', '')
+                keyword_one = request.args.get('keyword_one', None)
+                keyword_two = request.args.get('keyword_two', None)
                 selected_column_one=request.args.get('selected_column_one', None)
                 selected_column_two=request.args.get('selected_column_two', None)
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
         """---------------------------------"""
 
         page = request.args.get('page', 1, type=int)
-        keyword = request.args.get('keyword', '')
+        keyword_one = request.args.get('keyword_one', None)
+        keyword_two = request.args.get('keyword_two', None)
         selected_column_one=request.args.get('selected_column_one', None)
         selected_column_two=request.args.get('selected_column_two', None)
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
     service.date_number_no_two = request.form['date_number_no_two']
     service.certificate_no = request.form['certificate_no']
@@ -473,26 +482,28 @@ def update(id):
                 """---------------------------------"""
 
                 page = request.args.get('page', 1, type=int)
-                keyword = request.args.get('keyword', '')
+                keyword_one = request.args.get('keyword_one', None)
+                keyword_two = request.args.get('keyword_two', None)
                 selected_column_one=request.args.get('selected_column_one', None)
                 selected_column_two=request.args.get('selected_column_two', None)
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
         """---------------------------------"""
 
         page = request.args.get('page', 1, type=int)
-        keyword = request.args.get('keyword', '')
+        keyword_one = request.args.get('keyword_one', None)
+        keyword_two = request.args.get('keyword_two', None)
         selected_column_one=request.args.get('selected_column_one', None)
         selected_column_two=request.args.get('selected_column_two', None)
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
     service.comment = request.form['comment']
     service.color = request.form.get('color')
@@ -506,12 +517,13 @@ def update(id):
     """---------------------------------"""
 
     page = request.args.get('page', 1, type=int)
-    keyword = request.args.get('keyword', '')
+    keyword_one = request.args.get('keyword_one', None)
+    keyword_two = request.args.get('keyword_two', None)
     selected_column_one=request.args.get('selected_column_one', None)
     selected_column_two=request.args.get('selected_column_two', None)
     year = request.args.get('year', "")
     date_number_no_one = request.args.get('date_number_no_one', "")
-    return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
 
 @app.route('/update-color/<int:id>', methods=['POST'])
@@ -567,11 +579,12 @@ def add():
 
                 year = None
                 date_number_no_one = None
-                keyword = None
+                keyword_one = None
+                keyword_two = None
                 selected_column_one=None
                 selected_column_two=None
                 page = total_pages
-                return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -579,11 +592,12 @@ def add():
 
         year = None
         date_number_no_one = None
-        keyword = None
+        keyword_one = None
+        keyword_two = None
         selected_column_one=None
         selected_column_two=None
         page = total_pages
-        return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
     cost = request.form['cost']
     certificate = request.form['certificate']
@@ -602,11 +616,12 @@ def add():
 
                 year = None
                 date_number_no_one = None
-                keyword = None
+                keyword_one = None
+                keyword_two = None
                 selected_column_one=None
                 selected_column_two=None
                 page = total_pages
-                return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -614,11 +629,12 @@ def add():
 
         year = None
         date_number_no_one = None
-        keyword = None
+        keyword_one = None
+        keyword_two = None
         selected_column_one=None
         selected_column_two=None
         page = total_pages
-        return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
     date_number_no_two = request.form['date_number_no_two']
     certificate_no = request.form['certificate_no']
@@ -637,11 +653,12 @@ def add():
 
                 year = None
                 date_number_no_one = None
-                keyword = None
+                keyword_one = None
+                keyword_two = None
                 selected_column_one=None
                 selected_column_two=None
                 page = total_pages
-                return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -649,11 +666,12 @@ def add():
 
         year = None
         date_number_no_one = None
-        keyword = None
+        keyword_one = None
+        keyword_two = None
         selected_column_one=None
         selected_column_two=None
         page = total_pages
-        return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
     comment = request.form['comment']
     color = request.form.get('color')
@@ -681,11 +699,12 @@ def add():
 
     year = None
     date_number_no_one = None
-    keyword = None
+    keyword_one = None
+    keyword_two = None
     selected_column_one=None
     selected_column_two=None
     page = total_pages
-    return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
 # @app.route('/export-excel', methods=['GET'])
 # @login_required
