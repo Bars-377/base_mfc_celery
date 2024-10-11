@@ -330,13 +330,23 @@ def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column
 @app.route('/')
 @login_required
 def index():
+    total_pages_full = request.args.get('total_pages_full', None)
+
+    if total_pages_full:
+        per_page = 20
+        query = Service.query
+        total_services_full = query.count()
+        page = (total_services_full + per_page - 1) // per_page
+    else:
+        page = request.args.get('page', 1, type=int)
+
     date_number_no_one = request.args.get('date_number_no_one', None)
     year = request.args.get('year', None)
     keyword_one = request.args.get('keyword_one', None)
     keyword_two = request.args.get('keyword_two', None)
     selected_column_one=request.args.get('selected_column_one', None)
     selected_column_two=request.args.get('selected_column_two', None)
-    page = request.args.get('page', 1, type=int)
+
     return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
 @app.route('/edit/<int:id>', methods=['GET'])
