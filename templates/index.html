@@ -438,15 +438,15 @@
                 socket.once('task_status_failure', function() {
                     console.log('Отказ!'); // Лог потери соединения
                     const flashMessage = document.getElementById('flash-message');
-                    flashMessage.innerText = 'Отказа!';
+                    flashMessage.innerText = 'Отказ!';
                     flashMessage.style.display = 'block';
                 });
 
                 // Обработка потери соединения
-                socket.once('export_error', function() {
+                socket.once('export_error', function(data) {
                     console.log('Произошла ошибка формирования файла!'); // Лог потери соединения
                     const flashMessage = document.getElementById('flash-message');
-                    flashMessage.innerText = 'Отказа.';
+                    flashMessage.innerText = data.message;
                     flashMessage.style.display = 'block';
                 });
 

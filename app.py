@@ -1018,6 +1018,12 @@ def export_excel_task(sid, data):
                 # Определяем стиль для заливки желтым цветом
                 yellow_fill = PatternFill(start_color='FFFF00', end_color='FFFF00', fill_type='solid')
 
+                import re
+                def is_valid_hex_color(color):
+                    # Регулярное выражение для проверки формата цвета
+                    pattern = r'^#[0-9A-Fa-f]{6}$'
+                    return bool(re.match(pattern, color))
+
                 # Применяем границы ко всем ячейкам и цвет к ячейкам, где он задан
                 for row_num in range(2, worksheet.max_row + 1):  # Пропускаем заголовки
                     for col_num in range(1, worksheet.max_column + 1):
@@ -1026,7 +1032,7 @@ def export_excel_task(sid, data):
 
                         # Применяем цвет только к ячейкам данных
                         color = df.iloc[row_num - 2]['Color']  # Сопоставление индексов DataFrame
-                        if color and color != 'None':
+                        if color and is_valid_hex_color(color):
                             cell.fill = PatternFill(start_color=color.replace('#', ''), end_color=color.replace('#', ''), fill_type="solid")
 
                 # Применяем границы к заголовкам
