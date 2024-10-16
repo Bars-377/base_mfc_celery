@@ -1026,7 +1026,7 @@ def export_excel_task(sid, data):
 
                         # Применяем цвет только к ячейкам данных
                         color = df.iloc[row_num - 2]['Color']  # Сопоставление индексов DataFrame
-                        if color:
+                        if color and color != 'None':
                             cell.fill = PatternFill(start_color=color.replace('#', ''), end_color=color.replace('#', ''), fill_type="solid")
 
                 # Применяем границы к заголовкам
@@ -1075,7 +1075,7 @@ def export_excel_task(sid, data):
 
         except Exception as e:
             print(f"Ошибка в задаче для сессии {sid}: {e}")
-            socketio.emit('export_error', {'message': str(e)}, room=sid)
+            socketio.emit('export_error', {'message': str(e)}, room=request.sid)
 
 # Обработчик события для экспорта данных
 @socketio.on('export_excel')
