@@ -1,6 +1,7 @@
 import pandas as pd
 import mysql.connector
 import re
+from datetime import datetime
 
 # Установите соединение с базой данных
 conn = mysql.connector.connect(
@@ -48,25 +49,35 @@ try:
         if date_match:
             date_value = date_match.group(0)
             remaining_value = value.replace(date_value, '').strip()  # Остальное как номер
-            return date_value, str(remaining_value).replace(' от', '').strip()
+
+            try:
+                # Преобразуем строку даты в объект datetime
+                parsed_date = datetime.strptime(date_value, '%Y-%m-%d')
+                # Возвращаем дату в нужном формате
+                return parsed_date.strftime('%d.%m.%Y'), str(remaining_value).replace(' от', '').strip()
+            except ValueError:
+                return date_value, str(remaining_value).replace(' от', '').strip()
+
         return '', str(value)
 
     def safe_date_conversion(value):
-        from dateutil import parser
         if pd.isna(value):
             return ''  # Возвращаем None для недопустимых значений
 
-        try:
-            # Попробуйте распарсить дату
-            parsed_date = parser.parse(str(value), dayfirst=True)
-            return parsed_date.strftime('%d.%m.%Y')
-        except:
+        # Попробуем извлечь дату в формате ДД.ММ.ГГГГ или ГГГГ-ММ-ДД
+        date_match = re.search(r"\b(\d{2}\.\d{2}\.\d{4})\b|\b(\d{4}-\d{2}-\d{2})\b", str(value))
+        if date_match:
+            date_value = date_match.group(0)
+
             try:
-                # Попробуйте распарсить дату
-                parsed_date = parser.parse(str(value), dayfirst=True)
-                return parsed_date.strftime('%Y-%m-%d')
-            except:
-                return str(value) # Возвращаем None, если не удалось распарсить дату
+                # Преобразуем строку даты в объект datetime
+                parsed_date = datetime.strptime(date_value, '%Y-%m-%d')
+                # Возвращаем дату в нужном формате
+                return parsed_date.strftime('%d.%m.%Y')
+            except ValueError:
+                return date_value  # Возвращаем исходную строку, если не удаётся распарсить
+
+        return str(value) # Возвращаем None, если не удалось распарсить дату
 
     # Функции для преобразования данных
     def safe_conversion(value):
