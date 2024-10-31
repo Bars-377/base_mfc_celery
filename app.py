@@ -413,19 +413,20 @@ def update(id):
         if service.year:
             day = int(str(service.year).split('.')[0])
             month = int(str(service.year).split('.')[1])
-            if not (1 <= day <= 30 and 1 <= month <= 12):
+            if not (1 <= day <= 31 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
                 # return redirect(url_for('index'))
                 """---------------------------------"""
 
                 page = request.args.get('page', 1, type=int)
-                keyword = request.args.get('keyword', '')
+                keyword_one = request.args.get('keyword_one', None)
+                keyword_two = request.args.get('keyword_two', None)
                 selected_column_one=request.args.get('selected_column_one', None)
                 selected_column_two=request.args.get('selected_column_two', None)
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -451,7 +452,7 @@ def update(id):
         if service.date_number_no_one:
             day = int(str(service.date_number_no_one).split('.')[0])
             month = int(str(service.date_number_no_one).split('.')[1])
-            if not (1 <= day <= 30 and 1 <= month <= 12):
+            if not (1 <= day <= 31 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
                 # return redirect(url_for('index'))
                 """---------------------------------"""
@@ -490,7 +491,7 @@ def update(id):
         if service.date_post:
             day = int(str(service.date_post).split('.')[0])
             month = int(str(service.date_post).split('.')[1])
-            if not (1 <= day <= 30 and 1 <= month <= 12):
+            if not (1 <= day <= 31 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
                 # return redirect(url_for('index'))
                 """---------------------------------"""
@@ -586,7 +587,7 @@ def add():
         if year:
             day = int(str(year).split('.')[0])
             month = int(str(year).split('.')[1])
-            if not (1 <= day <= 30 and 1 <= month <= 12):
+            if not (1 <= day <= 31 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
                 # return redirect(url_for('index'))
                 """---------------------------------"""
@@ -623,7 +624,7 @@ def add():
         if date_number_no_one:
             day = int(str(date_number_no_one).split('.')[0])
             month = int(str(date_number_no_one).split('.')[1])
-            if not (1 <= day <= 30 and 1 <= month <= 12):
+            if not (1 <= day <= 31 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
                 # return redirect(url_for('index'))
                 """---------------------------------"""
@@ -660,7 +661,7 @@ def add():
         if date_post:
             day = int(str(date_post).split('.')[0])
             month = int(str(date_post).split('.')[1])
-            if not (1 <= day <= 30 and 1 <= month <= 12):
+            if not (1 <= day <= 31 and 1 <= month <= 12):
                 flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
                 # return redirect(url_for('index'))
                 """---------------------------------"""
