@@ -295,6 +295,13 @@ def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column
         total_cost_2 = db.session.query(db.func.sum(Service.certificate)).scalar() or 0
         total_cost_3 = db.session.query(db.func.sum(Service.certificate_no)).scalar() or 0
 
+    try:
+        page = int(page)
+        if not page > 0:
+            page = 1
+    except:
+        page = 1
+
     offset = (page - 1) * per_page
     services = query.offset(offset).limit(per_page).all()
     total_services = query.count()
