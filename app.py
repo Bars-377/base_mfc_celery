@@ -599,27 +599,33 @@ def add():
                 # return redirect(url_for('index'))
                 """---------------------------------"""
 
-                year = None
-                date_number_no_one = None
-                keyword_one = None
-                keyword_two = None
-                selected_column_one=None
-                selected_column_two=None
-                page = total_pages
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+                # year = None
+                # date_number_no_one = None
+                # keyword_one = None
+                # keyword_two = None
+                # selected_column_one=None
+                # selected_column_two=None
+                # page = total_pages
+                # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+                # Перенаправление после успешного добавления
+                return redirect(url_for('index', page=total_pages))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
         """---------------------------------"""
 
-        year = None
-        date_number_no_one = None
-        keyword_one = None
-        keyword_two = None
-        selected_column_one=None
-        selected_column_two=None
-        page = total_pages
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+        # year = None
+        # date_number_no_one = None
+        # keyword_one = None
+        # keyword_two = None
+        # selected_column_one=None
+        # selected_column_two=None
+        # page = total_pages
+        # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+        # Перенаправление после успешного добавления
+        return redirect(url_for('index', page=total_pages))
 
     cost = request.form['cost']
     certificate = request.form['certificate']
@@ -636,27 +642,33 @@ def add():
                 # return redirect(url_for('index'))
                 """---------------------------------"""
 
-                year = None
-                date_number_no_one = None
-                keyword_one = None
-                keyword_two = None
-                selected_column_one=None
-                selected_column_two=None
-                page = total_pages
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+                # year = None
+                # date_number_no_one = None
+                # keyword_one = None
+                # keyword_two = None
+                # selected_column_one=None
+                # selected_column_two=None
+                # page = total_pages
+                # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+                # Перенаправление после успешного добавления
+                return redirect(url_for('index', page=total_pages))
     except ValueError:
         flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
         """---------------------------------"""
 
-        year = None
-        date_number_no_one = None
-        keyword_one = None
-        keyword_two = None
-        selected_column_one=None
-        selected_column_two=None
-        page = total_pages
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+        # year = None
+        # date_number_no_one = None
+        # keyword_one = None
+        # keyword_two = None
+        # selected_column_one=None
+        # selected_column_two=None
+        # page = total_pages
+        # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+        # Перенаправление после успешного добавления
+        return redirect(url_for('index', page=total_pages))
 
     date_number_no_two = request.form['date_number_no_two']
     certificate_no = request.form['certificate_no']
@@ -673,27 +685,33 @@ def add():
                 # return redirect(url_for('index'))
                 """---------------------------------"""
 
-                year = None
-                date_number_no_one = None
-                keyword_one = None
-                keyword_two = None
-                selected_column_one=None
-                selected_column_two=None
-                page = total_pages
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+                # year = None
+                # date_number_no_one = None
+                # keyword_one = None
+                # keyword_two = None
+                # selected_column_one=None
+                # selected_column_two=None
+                # page = total_pages
+                # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+                # Перенаправление после успешного добавления
+                return redirect(url_for('index', page=total_pages))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
         """---------------------------------"""
 
-        year = None
-        date_number_no_one = None
-        keyword_one = None
-        keyword_two = None
-        selected_column_one=None
-        selected_column_two=None
-        page = total_pages
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+        # year = None
+        # date_number_no_one = None
+        # keyword_one = None
+        # keyword_two = None
+        # selected_column_one=None
+        # selected_column_two=None
+        # page = total_pages
+        # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+        # Перенаправление после успешного добавления
+        return redirect(url_for('index', page=total_pages))
 
     comment = request.form['comment']
     color = request.form.get('color')
@@ -719,14 +737,17 @@ def add():
 
     """---------------------------------"""
 
-    year = None
-    date_number_no_one = None
-    keyword_one = None
-    keyword_two = None
-    selected_column_one=None
-    selected_column_two=None
-    page = total_pages
-    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+    # year = None
+    # date_number_no_one = None
+    # keyword_one = None
+    # keyword_two = None
+    # selected_column_one=None
+    # selected_column_two=None
+    # page = total_pages
+    # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+
+    # Перенаправление после успешного добавления
+    return redirect(url_for('index', page=total_pages))
 
 # @app.route('/export-excel', methods=['GET'])
 # @login_required
