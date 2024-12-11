@@ -14,6 +14,10 @@ def restartable_process(command):
             print(f"Процесс {' '.join(command)} остановлен вручную.")
             process.terminate()
             break
+        except Exception as e:
+            print(f"Ошибка при выполнении команды {' '.join(command)}: {e}")
+            print("Перезапуск процесса через 5 секунд...")
+            time.sleep(5)
 
 # Основной запуск процессов
 if __name__ == "__main__":
