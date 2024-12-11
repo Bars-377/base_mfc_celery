@@ -22,7 +22,7 @@ def restartable_process(command):
 # Основной запуск процессов
 if __name__ == "__main__":
     try:
-        # Список команд для запуска процессов последовательно
+        # Список команд для запуска процессов
         commands = [
             ["python", "-m", "celery", "-A", "app:celery", "worker", "--concurrency=20", "--loglevel=INFO", "--pool=solo"],
             ["python", "-m", "celery", "-A", "app:celery", "flower"],
@@ -30,9 +30,16 @@ if __name__ == "__main__":
             ["python", "app_files.py"]
         ]
 
-        # Запуск процессов последовательно
-        for command in commands:
-            restartable_process(command)
+        while True:
+            for command in commands:
+                try:
+                    # Запуск процесса
+                    restartable_process(command)
+                    print(f"Процесс {' '.join(command)} завершён успешно.")
+                except Exception as e:
+                    print(f"Ошибка при выполнении команды {' '.join(command)}: {e}")
+                    print("Перезапуск всех процессов через 5 секунд...")
+                    time.sleep(5)  # Задержка перед перезапуском всех процессов
 
     except KeyboardInterrupt:
         print("Скрипт остановлен.")
