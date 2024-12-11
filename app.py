@@ -54,7 +54,11 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        print('POPAL')
+        print(username)
+        print(password)
         user = User.query.filter_by(username=username).first()
+        print(user)
         if user and user.check_password(password):
             login_user(user)
             flash('Вход успешен!', 'success')
