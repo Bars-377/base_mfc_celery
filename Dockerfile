@@ -9,11 +9,7 @@ COPY . /app
 
 # Устанавливаем зависимости
 RUN pip install --upgrade pip
-RUN python3 -m venv venv
-RUN ./venv/bin/pip install -r requirements.txt
-
-# Устанавливаем переменную окружения для работы с виртуальным окружением
-ENV PATH="/app/venv/bin:$PATH"
+RUN pip install -r requirements.txt
 
 # Открываем порт для приложения (если это веб-сервер)
 EXPOSE 5000
