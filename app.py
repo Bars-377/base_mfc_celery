@@ -1084,8 +1084,11 @@ def export_excel_task(sid, data):
             import datetime
             date = str(datetime.datetime.now().date())
 
-            # Определите путь для сохранения файла
-            file_path = f'C:\\Users\\admin\\Desktop\\file\\services_{sid}_{date}.xlsx'
+            # Получаем текущую директорию проекта
+            project_dir = os.path.dirname(os.path.abspath(__file__))
+
+            # Строим путь к папке file внутри проекта
+            file_path = os.path.join(project_dir, 'file', f'services_{sid}_{date}.xlsx')
 
             # Сохраняем файл на диск
             with open(file_path, 'wb') as f:
@@ -1144,7 +1147,11 @@ from flask import send_from_directory
 # Маршрут для скачивания файла
 @app.route('/file/<filename>')
 def download_file(filename):
-    directory = r'C:\Users\admin\Desktop\file'
+    # Получаем текущую директорию проекта
+    project_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Строим путь к папке file внутри проекта
+    directory = os.path.join(project_dir, 'file')
     return send_from_directory(directory, filename)
 
 @socketio.on('disconnect')
