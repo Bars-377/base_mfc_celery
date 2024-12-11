@@ -16,7 +16,7 @@ RUN ./venv/bin/pip install -r requirements.txt
 ENV PATH="/app/venv/bin:$PATH"
 
 # Открываем порт для приложения (если это веб-сервер)
-EXPOSE 8500
+EXPOSE 5000
 
 # Команда для запуска приложения
 CMD ["python", "start.py"]
