@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from models import db, Service, User
 import pandas as pd
 from io import BytesIO
 from openpyxl.styles import PatternFill, Border, Side
 from flask_login import LoginManager, login_user, logout_user, login_required
-from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask_wtf.csrf import CSRFProtect, csrf_exempt
 
 app = Flask(__name__)
 
@@ -50,21 +50,15 @@ def register():
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
+@csrf_exempt  # Отключаем CSRF для этого маршрута
 def login():
     if request.method == 'POST':
-        csrf_token = request.form['csrf_token']
-        if csrf_token != generate_csrf():
-            # Если CSRF токен неверный, перенаправляем пользователя на страницу входа
-            flash('Неверный или устаревший CSRF токен. Попробуйте снова.', 'danger')
-            return redirect(url_for('login'))
 
         username = request.form['username']
         password = request.form['password']
-        print('POPAL')
-        print(username)
-        print(password)
+
         user = User.query.filter_by(username=username).first()
-        print(user)
+
         if user and user.check_password(password):
             login_user(user)
             flash('Вход успешен!', 'success')
@@ -348,7 +342,8 @@ def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column
         service_date_number_no_one=service_date_number_no_one
     )
 
-@app.route('/')
+
+app.route('/')
 @login_required
 def index():
     total_pages_full = request.args.get('total_pages_full', None)
