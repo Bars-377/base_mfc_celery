@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_file
 from models import db, Service, User
 import pandas as pd
 from io import BytesIO
@@ -52,12 +52,9 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-
         username = request.form['username']
         password = request.form['password']
-
         user = User.query.filter_by(username=username).first()
-
         if user and user.check_password(password):
             login_user(user)
             flash('Вход успешен!', 'success')
@@ -341,8 +338,7 @@ def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column
         service_date_number_no_one=service_date_number_no_one
     )
 
-
-app.route('/')
+@app.route('/')
 @login_required
 def index():
     total_pages_full = request.args.get('total_pages_full', None)
@@ -1088,11 +1084,8 @@ def export_excel_task(sid, data):
             import datetime
             date = str(datetime.datetime.now().date())
 
-            # Получаем текущую директорию проекта
-            project_dir = os.path.dirname(os.path.abspath(__file__))
-
-            # Строим путь к папке file внутри проекта
-            file_path = os.path.join(project_dir, 'file', f'services_{sid}_{date}.xlsx')
+            # Определите путь для сохранения файла
+            file_path = f'C:\\Users\\admin\\Desktop\\file\\services_{sid}_{date}.xlsx'
 
             # Сохраняем файл на диск
             with open(file_path, 'wb') as f:
@@ -1151,11 +1144,7 @@ from flask import send_from_directory
 # Маршрут для скачивания файла
 @app.route('/file/<filename>')
 def download_file(filename):
-    # Получаем текущую директорию проекта
-    project_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Строим путь к папке file внутри проекта
-    directory = os.path.join(project_dir, 'file')
+    directory = r'C:\Users\admin\Desktop\file'
     return send_from_directory(directory, filename)
 
 @socketio.on('disconnect')
