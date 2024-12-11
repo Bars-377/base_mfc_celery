@@ -14,7 +14,7 @@ csrf_token = CSRFProtect(app)
 
 # app.secret_key = 'supersecretkey'
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@172.18.11.104/mdtomskbot'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@localhost/mdtomskbot'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
