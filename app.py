@@ -4,7 +4,7 @@ import pandas as pd
 from io import BytesIO
 from openpyxl.styles import PatternFill, Border, Side
 from flask_login import LoginManager, login_user, logout_user, login_required
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 
 app = Flask(__name__)
 
@@ -52,6 +52,12 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        csrf_token = request.form['csrf_token']
+        if csrf_token != generate_csrf():
+            # Если CSRF токен неверный, перенаправляем пользователя на страницу входа
+            flash('Неверный или устаревший CSRF токен. Попробуйте снова.', 'danger')
+            return redirect(url_for('login'))
+
         username = request.form['username']
         password = request.form['password']
         print('POPAL')

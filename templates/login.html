@@ -28,6 +28,8 @@
             {% endwith %}
 
             <form method="POST" class="form-group">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
+
                 <div class="form-item-login">
                     <label for="username">Имя пользователя:</label>
                     <input type="text" class="form-control" name="username" required>
@@ -36,7 +38,7 @@
                     <label for="password">Пароль:</label>
                     <input type="password" class="form-control" name="password" required>
                 </div>
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
+
                 <div class="form-item-login">
                     <input type="submit" class="btn btn-primary" value="Войти">
                 </div>
