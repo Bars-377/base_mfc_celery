@@ -1,45 +1,29 @@
-import subprocess
 import time
+import threading
+import subprocess
 
-# Функция для запуска процесса с автоматическим перезапуском
-def restartable_process(command):
-    while True:
-        try:
-            print(f"Запускаем: {' '.join(command)}")
-            process = subprocess.Popen(command)
-            process.wait()  # Ожидание завершения процесса
-            print(f"Процесс {' '.join(command)} завершился. Перезапуск через 5 секунд...")
-            time.sleep(5)  # Небольшая задержка перед перезапуском
-        except KeyboardInterrupt:
-            print(f"Процесс {' '.join(command)} остановлен вручную.")
-            process.terminate()
-            break
-        except Exception as e:
-            print(f"Ошибка при выполнении команды {' '.join(command)}: {e}")
-            print("Перезапуск процесса через 5 секунд...")
-            time.sleep(5)
+def run_command(command):
+    subprocess.run(command)
 
-# Основной запуск процессов
 if __name__ == "__main__":
-    try:
-        # Список команд для запуска процессов
-        commands = [
-            ["python", "-m", "celery", "-A", "app:celery", "worker", "--concurrency=20", "--loglevel=INFO", "--pool=solo"],
-            ["python", "-m", "celery", "-A", "app:celery", "flower"],
-            ["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "10", "-k", "eventlet", "-b", "0.0.0.0:5000", "app:app"],
-            ["python", "app_files.py"]
-        ]
+    # создание и запуск потоков для каждого процесса
+    t1 = threading.Thread(target=run_command, args=(["python", "-m", "celery", "-A", "app:celery", "worker", "--concurrency=20", "--loglevel=INFO", "--pool=solo"],))
+    t1.start()
+    time.sleep(2)
 
-        while True:
-            for command in commands:
-                try:
-                    # Запуск процесса
-                    restartable_process(command)
-                    print(f"Процесс {' '.join(command)} завершён успешно.")
-                except Exception as e:
-                    print(f"Ошибка при выполнении команды {' '.join(command)}: {e}")
-                    print("Перезапуск всех процессов через 5 секунд...")
-                    time.sleep(5)  # Задержка перед перезапуском всех процессов
+    t2 = threading.Thread(target=run_command, args=(["python", "-m", "celery", "-A", "app:celery", "flower"],))
+    t2.start()
+    time.sleep(2)
 
-    except KeyboardInterrupt:
-        print("Скрипт остановлен.")
+    t3 = threading.Thread(target=run_command, args=(["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "10", "-k", "eventlet", "-b", "0.0.0.0:5000", "app:app"],))
+    t3.start()
+    time.sleep(2)
+
+    t4 = threading.Thread(target=run_command, args=(["python", "app_files.py"],))
+    t4.start()
+
+    # ожидание завершения всех потоков
+    t1.join()
+    t2.join()
+    t3.join()
+    t4.join()
