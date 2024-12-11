@@ -21,7 +21,7 @@ if __name__ == "__main__":
         # Запускаем процессы в отдельных потоках
         import threading
         threads = [
-            threading.Thread(target=restartable_process, args=(["python", "app.py"],)),
+            threading.Thread(target=restartable_process, args=(["python", "gunicorn -w 10 -k eventlet app:app"],)),
             threading.Thread(target=restartable_process, args=(["python", "app_files.py"],))
         ]
 
