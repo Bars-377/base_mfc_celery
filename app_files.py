@@ -4,8 +4,11 @@ import re
 from datetime import datetime
 
 def process_1():
-    # Путь к папке с файлами
-    folder_path = r"C:\Users\admin\Desktop\file"
+    # Получаем текущую директорию проекта
+    project_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Строим путь к папке file внутри проекта
+    folder_path = os.path.join(project_dir, 'file')
 
     # Получаем текущую дату
     current_date = datetime.now()  # Оставляем datetime
