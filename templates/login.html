@@ -28,6 +28,7 @@
             {% endwith %}
 
             <form method="POST" class="form-group">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
 
                 <div class="form-item-login">
                     <label for="username">Имя пользователя:</label>
