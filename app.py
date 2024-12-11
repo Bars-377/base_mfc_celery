@@ -50,7 +50,6 @@ def register():
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
-@csrf_token.exempt  # Отключаем CSRF для этого маршрута
 def login():
     if request.method == 'POST':
 
