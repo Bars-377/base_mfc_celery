@@ -4,7 +4,7 @@ import pandas as pd
 from io import BytesIO
 from openpyxl.styles import PatternFill, Border, Side
 from flask_login import LoginManager, login_user, logout_user, login_required
-from flask_wtf.csrf import CSRFProtect, csrf_exempt
+from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 
@@ -50,7 +50,7 @@ def register():
     return render_template('register.html')
 
 @app.route('/login', methods=['GET', 'POST'])
-@csrf_exempt  # Отключаем CSRF для этого маршрута
+@csrf_token.exempt  # Отключаем CSRF для этого маршрута
 def login():
     if request.method == 'POST':
 
