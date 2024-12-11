@@ -5,7 +5,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy()
 
 class Service(db.Model):
-    __tablename__ = 'services_test'  # Название таблицы в базе данных
+    __tablename__ = 'services'  # Название таблицы в базе данных
 
     # Определяем поля таблицы
     id = db.Column(db.BigInteger, primary_key=True)  # Поле для уникального идентификатора записи (первичный ключ)
