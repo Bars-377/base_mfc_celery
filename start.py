@@ -18,20 +18,17 @@ def restartable_process(command):
 # Основной запуск процессов
 if __name__ == "__main__":
     try:
-        # Запускаем процессы в отдельных потоках
-        import threading
-        threads = [
-            threading.Thread(target=restartable_process, args=(["python", "-m", "celery", "-A", "app:celery", "worker", "--concurrency=20", "--loglevel=INFO", "--pool=solo"],)),
-            threading.Thread(target=restartable_process, args=(["python", "-m", "celery", "-A", "app:celery", "flower"],)),
-            threading.Thread(target=restartable_process, args=(["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "10", "-k", "eventlet", "-b", "0.0.0.0:5000", "app:app"],)),
-            threading.Thread(target=restartable_process, args=(["python", "app_files.py"],))
+        # Список команд для запуска процессов последовательно
+        commands = [
+            ["python", "-m", "celery", "-A", "app:celery", "worker", "--concurrency=20", "--loglevel=INFO", "--pool=solo"],
+            ["python", "-m", "celery", "-A", "app:celery", "flower"],
+            ["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "10", "-k", "eventlet", "-b", "0.0.0.0:5000", "app:app"],
+            ["python", "app_files.py"]
         ]
 
-        for thread in threads:
-            thread.start()
+        # Запуск процессов последовательно
+        for command in commands:
+            restartable_process(command)
 
-        # Ожидаем завершения всех потоков
-        for thread in threads:
-            thread.join()
     except KeyboardInterrupt:
         print("Скрипт остановлен.")
