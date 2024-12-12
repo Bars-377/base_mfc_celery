@@ -12,7 +12,7 @@ COPY . /app
 # RUN pip install -r requirements.txt
 
 # Копируем директорию виртуального окружения в контейнер
-COPY myvenv /app/myenv
+COPY myenv /app/myenv
 
 # Устанавливаем переменную окружения для Python, чтобы он использовал библиотеки из виртуального окружения
 ENV VIRTUAL_ENV=/app/myenv
