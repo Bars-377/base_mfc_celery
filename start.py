@@ -15,7 +15,7 @@ if __name__ == "__main__":
     t2.start()
     time.sleep(2)
 
-    t3 = threading.Thread(target=run_command, args=(["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "10", "-k", "eventlet", "-b", "0.0.0.0:5000", "app:app"],))
+    t3 = threading.Thread(target=run_command, args=(['gunicorn', '--access-logfile', '-', '--error-logfile', '-', '-w', '10', '-k', 'eventlet', '-b', '0.0.0.0:5000', '--forwarded-allow-ips="*"', 'app:app'],))
     t3.start()
     time.sleep(2)
 
