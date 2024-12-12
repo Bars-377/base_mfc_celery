@@ -3,7 +3,7 @@ from models import db, Service, User
 import pandas as pd
 from io import BytesIO
 from openpyxl.styles import PatternFill, Border, Side
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
@@ -55,11 +55,12 @@ from wtforms.validators import DataRequired
 
 class LoginForm(FlaskForm):
     csrf_token = HiddenField()
-    # submit = SubmitField('Submit')
+    submit = SubmitField('Submit')  # Кнопка отправки обязательно должна быть!
+
+mas = {}
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    print('POPAL login')
     form = LoginForm()
     if request.method == 'POST':
         username = request.form['username']
@@ -68,12 +69,20 @@ def login():
         if user and user.check_password(password):
             login_user(user)
             flash('Вход успешен!', 'success')
+            if not current_user.username in mas:
+                mas[current_user.username] = form
+                # csrf_token = form
+            # else:
+            #     print('PFDSFDSFDSFSDFDSFDS')
+            #     csrf_token = mas[current_user.username]
             next_page = request.args.get('next')
             return redirect(next_page or url_for('index'))
+            # # print('POPAL_N', csrf_token)
+            # return render_template('index.html', form=csrf_token)
         flash('Неверное имя пользователя или пароль!', 'danger')
     return render_template('login.html', form=form)
 
-def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form):
+def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token):
     per_page = 20
 
     import re
@@ -346,15 +355,19 @@ def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column
         end_page=end_page,
         service_years=service_years,
         service_date_number_no_one=service_date_number_no_one,
-        form=form
+        form=csrf_token
     )
 
 @app.route('/')
 @login_required
 def index():
-    form = LoginForm()
-    print('POPAL index')
-    print(form)
+
+    if not current_user.username in mas:
+        flash('Неверное имя пользователя или пароль!', 'danger')
+        return render_template('login.html', form=csrf_token)
+    else:
+        csrf_token = mas[current_user.username]
+
     total_pages_full = request.args.get('total_pages_full', None)
 
     if total_pages_full:
@@ -372,12 +385,16 @@ def index():
     selected_column_one=request.args.get('selected_column_one', None)
     selected_column_two=request.args.get('selected_column_two', None)
 
-    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
+    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
 
 @app.route('/edit/<int:id>', methods=['GET'])
 @login_required
 def edit(id):
-    form = LoginForm()
+    if not current_user.username in mas:
+        flash('Неверное имя пользователя или пароль!', 'danger')
+        return render_template('login.html', form=csrf_token)
+    else:
+        csrf_token = mas[current_user.username]
 
     page = request.args.get('page', 1, type=int)
     keyword_one = request.args.get('keyword_one', None)
@@ -394,12 +411,16 @@ def edit(id):
     # print(selected_year)
 
     service = Service.query.get_or_404(id)
-    return render_template('edit.html', service=service, page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, form=form)
+    return render_template('edit.html', service=service, page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, form=csrf_token)
 
 @app.route('/add_edit', methods=['GET'])
 @login_required
 def add_edit():
-    form = LoginForm()
+    if not current_user.username in mas:
+        flash('Неверное имя пользователя или пароль!', 'danger')
+        return render_template('login.html', form=csrf_token)
+    else:
+        csrf_token = mas[current_user.username]
 
     page = request.args.get('page', 1, type=int)
     keyword_one = request.args.get('keyword_one', None)
@@ -416,12 +437,17 @@ def add_edit():
     # print(selected_column)
     # print(selected_year)
 
-    return render_template('add.html', page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages, form=form)
+    return render_template('add.html', page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages, form=csrf_token)
 
 @app.route('/edit/<int:id>', methods=['POST'])
 @login_required
 def update(id):
-    form = LoginForm()
+    if not current_user.username in mas:
+        flash('Неверное имя пользователя или пароль!', 'danger')
+        return render_template('login.html', form=csrf_token)
+    else:
+        csrf_token = mas[current_user.username]
+
     service = Service.query.get_or_404(id)
     service.id_id = request.form['id_id']
     service.name = request.form['name']
@@ -450,7 +476,7 @@ def update(id):
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -464,7 +490,7 @@ def update(id):
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
 
     service.cost = request.form['cost']
     service.certificate = request.form['certificate']
@@ -489,7 +515,7 @@ def update(id):
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
     except ValueError:
         flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -503,7 +529,7 @@ def update(id):
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
 
     service.date_number_no_two = request.form['date_number_no_two']
     service.certificate_no = request.form['certificate_no']
@@ -528,7 +554,7 @@ def update(id):
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
     except ValueError:
         flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -542,7 +568,7 @@ def update(id):
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
 
     service.comment = request.form['comment']
     service.color = request.form.get('color')
@@ -562,7 +588,7 @@ def update(id):
     selected_column_two=request.args.get('selected_column_two', None)
     year = request.args.get('year', "")
     date_number_no_one = request.args.get('date_number_no_one', "")
-    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
+    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
 
 
 @app.route('/update-color/<int:id>', methods=['POST'])
@@ -595,7 +621,12 @@ def delete(id):
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
-    form = LoginForm()
+    if not current_user.username in mas:
+        flash('Неверное имя пользователя или пароль!', 'danger')
+        return render_template('login.html', form=csrf_token)
+    else:
+        csrf_token = mas[current_user.username]
+
     total_pages = request.args.get('total_pages', 1, type=int)
 
     # id_id = request.foыrm['id_id']
@@ -627,7 +658,7 @@ def add():
                 # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
                 # Перенаправление после успешного добавления
-                return redirect(url_for('index', page=total_pages, form=form))
+                return redirect(url_for('index', page=total_pages, form=csrf_token))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -643,7 +674,7 @@ def add():
         # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
         # Перенаправление после успешного добавления
-        return redirect(url_for('index', page=total_pages, form=form))
+        return redirect(url_for('index', page=total_pages, form=csrf_token))
 
     cost = request.form['cost']
     certificate = request.form['certificate']
@@ -670,7 +701,7 @@ def add():
                 # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
                 # Перенаправление после успешного добавления
-                return redirect(url_for('index', page=total_pages, form=form))
+                return redirect(url_for('index', page=total_pages, form=csrf_token))
     except ValueError:
         flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -686,7 +717,7 @@ def add():
         # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
         # Перенаправление после успешного добавления
-        return redirect(url_for('index', page=total_pages, form=form))
+        return redirect(url_for('index', page=total_pages, form=csrf_token))
 
     date_number_no_two = request.form['date_number_no_two']
     certificate_no = request.form['certificate_no']
@@ -713,7 +744,7 @@ def add():
                 # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
                 # Перенаправление после успешного добавления
-                return redirect(url_for('index', page=total_pages, form=form))
+                return redirect(url_for('index', page=total_pages, form=csrf_token))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -729,7 +760,7 @@ def add():
         # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
         # Перенаправление после успешного добавления
-        return redirect(url_for('index', page=total_pages, form=form))
+        return redirect(url_for('index', page=total_pages, form=csrf_token))
 
     comment = request.form['comment']
     color = request.form.get('color')
@@ -765,7 +796,7 @@ def add():
     # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
     # Перенаправление после успешного добавления
-    return redirect(url_for('index', page=total_pages, form=form))
+    return redirect(url_for('index', page=total_pages, form=csrf_token))
 
 # @app.route('/export-excel', methods=['GET'])
 # @login_required
