@@ -8,6 +8,19 @@ from flask_wtf.csrf import CSRFProtect
 
 app = Flask(__name__)
 
+import secrets
+
+def generate_secret_key(length=24):
+    """
+    Генерирует безопасный SECRET_KEY для Flask-приложения.
+
+    :param length: Длина ключа (по умолчанию 24 символа, подходит для Flask)
+    :return: Строка, представляющая случайный SECRET_KEY
+    """
+    return secrets.token_hex(length)
+
+app.config['SECRET_KEY'] = generate_secret_key()
+
 import os
 app.secret_key = os.urandom(24)  # Генерирует случайный ключ длиной 24 байта
 csrf_token = CSRFProtect(app)
