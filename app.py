@@ -59,6 +59,7 @@ class LoginForm(FlaskForm):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    print('POPAL login')
     form = LoginForm()
     if request.method == 'POST':
         username = request.form['username']
@@ -352,6 +353,8 @@ def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column
 @login_required
 def index():
     form = LoginForm()
+    print('POPAL index')
+    print(form)
     total_pages_full = request.args.get('total_pages_full', None)
 
     if total_pages_full:
