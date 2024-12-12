@@ -49,8 +49,17 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField, HiddenField
+from wtforms.validators import DataRequired
+
+class LoginForm(FlaskForm):
+    csrf_token = HiddenField()
+    # submit = SubmitField('Submit')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    form = LoginForm()
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -61,9 +70,9 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page or url_for('index'))
         flash('Неверное имя пользователя или пароль!', 'danger')
-    return render_template('login.html')
+    return render_template('login.html', form=form)
 
-def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page):
+def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form):
     per_page = 20
 
     import re
@@ -335,12 +344,14 @@ def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column
         start_page=start_page,
         end_page=end_page,
         service_years=service_years,
-        service_date_number_no_one=service_date_number_no_one
+        service_date_number_no_one=service_date_number_no_one,
+        form=form
     )
 
 @app.route('/')
 @login_required
 def index():
+    form = LoginForm()
     total_pages_full = request.args.get('total_pages_full', None)
 
     if total_pages_full:
@@ -358,11 +369,12 @@ def index():
     selected_column_one=request.args.get('selected_column_one', None)
     selected_column_two=request.args.get('selected_column_two', None)
 
-    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
 
 @app.route('/edit/<int:id>', methods=['GET'])
 @login_required
 def edit(id):
+    form = LoginForm()
 
     page = request.args.get('page', 1, type=int)
     keyword_one = request.args.get('keyword_one', None)
@@ -379,11 +391,12 @@ def edit(id):
     # print(selected_year)
 
     service = Service.query.get_or_404(id)
-    return render_template('edit.html', service=service, page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one)
+    return render_template('edit.html', service=service, page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, form=form)
 
 @app.route('/add_edit', methods=['GET'])
 @login_required
 def add_edit():
+    form = LoginForm()
 
     page = request.args.get('page', 1, type=int)
     keyword_one = request.args.get('keyword_one', None)
@@ -400,11 +413,12 @@ def add_edit():
     # print(selected_column)
     # print(selected_year)
 
-    return render_template('add.html', page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages)
+    return render_template('add.html', page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one, total_pages=total_pages, form=form)
 
 @app.route('/edit/<int:id>', methods=['POST'])
 @login_required
 def update(id):
+    form = LoginForm()
     service = Service.query.get_or_404(id)
     service.id_id = request.form['id_id']
     service.name = request.form['name']
@@ -433,7 +447,7 @@ def update(id):
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -447,7 +461,7 @@ def update(id):
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
 
     service.cost = request.form['cost']
     service.certificate = request.form['certificate']
@@ -472,7 +486,7 @@ def update(id):
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
     except ValueError:
         flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -486,7 +500,7 @@ def update(id):
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
 
     service.date_number_no_two = request.form['date_number_no_two']
     service.certificate_no = request.form['certificate_no']
@@ -511,7 +525,7 @@ def update(id):
                 year = request.args.get('year', "")
                 date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
     except ValueError:
         flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -525,7 +539,7 @@ def update(id):
         year = request.args.get('year', "")
         date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
 
     service.comment = request.form['comment']
     service.color = request.form.get('color')
@@ -545,7 +559,7 @@ def update(id):
     selected_column_two=request.args.get('selected_column_two', None)
     year = request.args.get('year', "")
     date_number_no_one = request.args.get('date_number_no_one', "")
-    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
+    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, form)
 
 
 @app.route('/update-color/<int:id>', methods=['POST'])
@@ -578,6 +592,7 @@ def delete(id):
 @app.route('/add', methods=['POST'])
 @login_required
 def add():
+    form = LoginForm()
     total_pages = request.args.get('total_pages', 1, type=int)
 
     # id_id = request.foыrm['id_id']
@@ -609,7 +624,7 @@ def add():
                 # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
                 # Перенаправление после успешного добавления
-                return redirect(url_for('index', page=total_pages))
+                return redirect(url_for('index', page=total_pages, form=form))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -625,7 +640,7 @@ def add():
         # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
         # Перенаправление после успешного добавления
-        return redirect(url_for('index', page=total_pages))
+        return redirect(url_for('index', page=total_pages, form=form))
 
     cost = request.form['cost']
     certificate = request.form['certificate']
@@ -652,7 +667,7 @@ def add():
                 # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
                 # Перенаправление после успешного добавления
-                return redirect(url_for('index', page=total_pages))
+                return redirect(url_for('index', page=total_pages, form=form))
     except ValueError:
         flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -668,7 +683,7 @@ def add():
         # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
         # Перенаправление после успешного добавления
-        return redirect(url_for('index', page=total_pages))
+        return redirect(url_for('index', page=total_pages, form=form))
 
     date_number_no_two = request.form['date_number_no_two']
     certificate_no = request.form['certificate_no']
@@ -695,7 +710,7 @@ def add():
                 # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
                 # Перенаправление после успешного добавления
-                return redirect(url_for('index', page=total_pages))
+                return redirect(url_for('index', page=total_pages, form=form))
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
@@ -711,7 +726,7 @@ def add():
         # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
         # Перенаправление после успешного добавления
-        return redirect(url_for('index', page=total_pages))
+        return redirect(url_for('index', page=total_pages, form=form))
 
     comment = request.form['comment']
     color = request.form.get('color')
@@ -747,7 +762,7 @@ def add():
     # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page)
 
     # Перенаправление после успешного добавления
-    return redirect(url_for('index', page=total_pages))
+    return redirect(url_for('index', page=total_pages, form=form))
 
 # @app.route('/export-excel', methods=['GET'])
 # @login_required
