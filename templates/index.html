@@ -230,7 +230,7 @@
                                     <a href="{{ url_for('edit', id=service.id, page=page, keyword_one=keyword_one, keyword_two=keyword_two, selected_column_one=selected_column_one, selected_column_two=selected_column_two, selected_year=selected_year, selected_date_number_no_one=selected_date_number_no_one) }}"
                                         class="btn btn-sm btn-warning">Edit</a>
                                     <form class="delete-form" data-id="{{ service.id }}" style="display:inline;">
-                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!-- Скрытое поле для токена -->
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
                                         <button type="button" class="btn btn-sm btn-danger delete-button">Delete</button>
                                     </form>
                                 </div>
