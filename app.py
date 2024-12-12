@@ -49,19 +49,38 @@ def register():
         return redirect(url_for('login'))
     return render_template('register.html')
 
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#     if request.method == 'POST':
+#         username = request.form['username']
+#         password = request.form['password']
+#         user = User.query.filter_by(username=username).first()
+#         if user and user.check_password(password):
+#             login_user(user)
+#             flash('Вход успешен!', 'success')
+#             next_page = request.args.get('next')
+#             return redirect(next_page or url_for('index'))
+#         flash('Неверное имя пользователя или пароль!', 'danger')
+#     return render_template('login.html')
+
+from forms import LoginForm  # Импортируйте класс формы
+# ... другие импорты
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username).first()
-        if user and user.check_password(password):
-            login_user(user)
-            flash('Вход успешен!', 'success')
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('index'))
-        flash('Неверное имя пользователя или пароль!', 'danger')
-    return render_template('login.html')
+    form = LoginForm()  # Гарантируем, что форм всегда инициализируется
+    if form.validate_on_submit():  # Проверяем, была ли форма отправлена и прошла ли валидацию
+        username = form.username.data  # Получаем данные имени пользователя
+        password = form.password.data  # Получаем данные пароля
+        user = User.query.filter_by(username=username).first()  # Ищем пользователя
+        if user and user.check_password(password):  # Проверяем пароль
+            login_user(user)  # Входим в систему
+            flash('Вход успешен!', 'success')  # Успешное сообщение
+            next_page = request.args.get('next')  # Получаем следующий URL
+            return redirect(next_page or url_for('index'))  # Перенаправляем
+        flash('Неверное имя пользователя или пароль!', 'danger')  # Ошибка
+    return render_template('login.html', form=form)  # Отправляем форму в шаблон
+
 
 def skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page):
     per_page = 20

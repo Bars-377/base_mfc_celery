@@ -27,20 +27,21 @@
             {% endif %}
             {% endwith %}
 
-            <form method="POST" class="form-group">
+            <form method="POST" action="/login" class="form-group">
+                {{ form.hidden_tag() }}  <!-- Поле для CSRF токена -->
+
                 <div class="form-item-login">
-                    <label for="username">Имя пользователя:</label>
-                    <input type="text" class="form-control" name="username" required>
-                </div>
-                <div class="form-item-login">
-                    <label for="password">Пароль:</label>
-                    <input type="password" class="form-control" name="password" required>
+                    {{ form.username.label(class="form-label") }}  <!-- Этикетка для имени пользователя -->
+                    {{ form.username(class="form-control", placeholder="Введите имя пользователя") }}  <!-- Поле ввода для имени пользователя -->
                 </div>
 
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  <!-- Скрытое поле для токена -->
-                
                 <div class="form-item-login">
-                    <input type="submit" class="btn btn-primary" value="Войти">
+                    {{ form.password.label(class="form-label") }}  <!-- Этикетка для пароля -->
+                    {{ form.password(class="form-control", placeholder="Введите пароль") }}  <!-- Поле ввода для пароля -->
+                </div>
+
+                <div class="form-item-login">
+                    {{ form.submit(class="btn btn-primary") }}  <!-- Кнопка входа -->
                 </div>
             </form>
         </div>
