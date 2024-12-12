@@ -7,16 +7,16 @@ WORKDIR /app
 # Копируем файлы проекта в контейнер
 COPY . /app
 
-# Устанавливаем зависимости
-# RUN pip install --upgrade pip
-# RUN pip install -r requirements.txt
+Устанавливаем зависимости
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
 
-# Копируем директорию виртуального окружения в контейнер
-COPY myenv /app/myenv
+# # Копируем директорию виртуального окружения в контейнер
+# COPY myenv /app/myenv
 
-# Устанавливаем переменную окружения для Python, чтобы он использовал библиотеки из виртуального окружения
-ENV VIRTUAL_ENV=/app/myenv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# # Устанавливаем переменную окружения для Python, чтобы он использовал библиотеки из виртуального окружения
+# ENV VIRTUAL_ENV=/app/myenv
+# ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # Открываем порт для приложения (если это веб-сервер)
 EXPOSE 5000
