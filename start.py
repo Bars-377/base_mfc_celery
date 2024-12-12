@@ -5,9 +5,6 @@ import subprocess
 def run_command(command):
     subprocess.run(command)
 
-import secrets
-secret_key = secrets.token_urlsafe(32)  # 32 байта - это хорошее значение
-
 if __name__ == "__main__":
     # создание и запуск потоков для каждого процесса
     t1 = threading.Thread(target=run_command, args=(["python", "-m", "celery", "-A", "app:celery", "worker", "--concurrency=20", "--loglevel=INFO", "--pool=solo"],))
@@ -18,7 +15,7 @@ if __name__ == "__main__":
     t2.start()
     time.sleep(2)
 
-    t3 = threading.Thread(target=run_command, args=(["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "10", "-k", "eventlet", "-b", "0.0.0.0:5000", "app:app", "--env", f"FLASK_SECRET_KEY={secret_key}"],))
+    t3 = threading.Thread(target=run_command, args=(["gunicorn", "--access-logfile", "-", "--error-logfile", "-", "-w", "10", "-k", "eventlet", "-b", "0.0.0.0:5000", "app:app"],))
     t3.start()
     time.sleep(2)
 
