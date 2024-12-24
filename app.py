@@ -25,7 +25,7 @@ import os
 app.secret_key = os.urandom(24)  # Генерирует случайный ключ длиной 24 байта
 csrf_token = CSRFProtect(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@172.18.11.104/mdtomskbot'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@172.18.11.104/basemfccelery'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 

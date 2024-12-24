@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Дамп структуры базы данных mdtomskbot
-CREATE DATABASE IF NOT EXISTS `mdtomskbot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `mdtomskbot`;
+-- Дамп структуры базы данных basemfccelery
+CREATE DATABASE IF NOT EXISTS `basemfccelery` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `basemfccelery`;
 
--- Дамп структуры для таблица mdtomskbot.services
+-- Дамп структуры для таблица basemfccelery.services
 CREATE TABLE IF NOT EXISTS `services` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `id_id` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -72,11 +72,11 @@ CREATE TABLE IF NOT EXISTS `services` (
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Дамп структуры базы данных mdtomskbot
-CREATE DATABASE IF NOT EXISTS `mdtomskbot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `mdtomskbot`;
+-- Дамп структуры базы данных basemfccelery
+CREATE DATABASE IF NOT EXISTS `basemfccelery` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `basemfccelery`;
 
--- Дамп структуры для таблица mdtomskbot.users
+-- Дамп структуры для таблица basemfccelery.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
