@@ -491,6 +491,7 @@
 
             fetch(`/update-color/${rowId}`, {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': csrfToken // Замените csrfToken на фактический токен
@@ -614,6 +615,7 @@
                     if (confirmDelete()) {
                         fetch(`/delete/${serviceId}`, {  // Убедитесь, что здесь правильный путь
                             method: 'POST',
+                            credentials: 'same-origin',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'X-CSRFToken': form.querySelector('input[name="csrf_token"]').value  // CSRF токен

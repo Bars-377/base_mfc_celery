@@ -15,6 +15,11 @@
 
          .\venv\Scripts\activate
 
+   Если нужно создать виртуально окружение:
+
+         python -m venv venv
+
+
 1. Запустить nginx
 
    В \nginx-1.27.1 запускать nginx_start.exe

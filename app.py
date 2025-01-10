@@ -25,7 +25,11 @@ import os
 app.secret_key = os.urandom(24)  # Генерирует случайный ключ длиной 24 байта
 csrf_token = CSRFProtect(app)
 
+"""ОТКЛЮЧИТЬ CSRF"""
+# app.config['WTF_CSRF_ENABLED'] = False
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@172.18.11.104/basemfccelery'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@localhost/basemfccelery'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
 
@@ -936,6 +940,7 @@ def add():
 
 from celery import Celery
 celery = Celery(app.name, broker='redis://172.18.11.104:6379', backend='redis://172.18.11.104:6379')
+# celery = Celery(app.name, broker='redis://localhost:6379', backend='redis://localhost:6379')
 
 from flask_socketio import SocketIO
 socketio = SocketIO(app)
