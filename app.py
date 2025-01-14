@@ -631,7 +631,8 @@ def delete(id):
     db.session.delete(service)
     db.session.commit()
     # flash('Данные успешно удалены!', 'success')
-    return redirect(url_for('index'))
+    # return redirect(url_for('index'))
+    return '', 204  # Возвращаем статус 204 без тела
 
 @app.route('/add', methods=['POST'])
 @login_required
