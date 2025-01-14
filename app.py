@@ -624,7 +624,7 @@ def update_color(id):
     else:
         return jsonify({'success': False, 'message': 'No color provided'}), 400
 
-@app.route('/delete/<int:id>', methods=['POST'])
+@app.route('/delete/<int:id>', methods=['DELETE'])
 @login_required
 def delete(id):
     service = Service.query.get_or_404(id)

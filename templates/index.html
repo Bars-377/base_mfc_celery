@@ -614,7 +614,7 @@
 
                     if (confirmDelete()) {
                         fetch(`/delete/${serviceId}`, {  // Убедитесь, что здесь правильный путь
-                            method: 'POST',
+                            method: 'DELETE',
                             credentials: 'same-origin',
                             headers: {
                                 'Content-Type': 'application/json',
