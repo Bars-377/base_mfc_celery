@@ -26,7 +26,7 @@ app.secret_key = os.urandom(24)  # Генерирует случайный кл�
 csrf_token = CSRFProtect(app)
 
 """ОТКЛЮЧИТЬ CSRF"""
-# app.config['WTF_CSRF_ENABLED'] = False
+app.config['WTF_CSRF_ENABLED'] = False
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@172.18.11.104/basemfccelery'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:enigma1418@localhost/basemfccelery'
