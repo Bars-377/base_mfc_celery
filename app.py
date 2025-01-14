@@ -476,8 +476,8 @@ def update(id):
     service.number = request.form['number']
 
     page = request.args.get('page', 1, type=int)
-    keyword_one = request.args.get('keyword_one', None)
-    keyword_two = request.args.get('keyword_two', None)
+    keyword_one = request.args.get('keyword_one', '')
+    keyword_two = request.args.get('keyword_two', '')
     selected_column_one=request.args.get('selected_column_one', None)
     selected_column_two=request.args.get('selected_column_two', None)
     year = request.args.get('year', "")
