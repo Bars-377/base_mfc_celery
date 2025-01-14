@@ -6,6 +6,8 @@ from openpyxl.styles import PatternFill, Border, Side
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_wtf.csrf import CSRFProtect
 
+from urllib.parse import urlencode
+
 app = Flask(__name__)
 
 import secrets
@@ -473,6 +475,26 @@ def update(id):
     service.benefit = request.form['benefit']
     service.number = request.form['number']
 
+    page = request.args.get('page', 1, type=int)
+    keyword_one = request.args.get('keyword_one', None)
+    keyword_two = request.args.get('keyword_two', None)
+    selected_column_one=request.args.get('selected_column_one', None)
+    selected_column_two=request.args.get('selected_column_two', None)
+    year = request.args.get('year', "")
+    date_number_no_one = request.args.get('date_number_no_one', "")
+
+    # Формирование строки запроса
+    query_params = {
+        'date_number_no_one': date_number_no_one,
+        'year': year,
+        'keyword_one': keyword_one,
+        'keyword_two': keyword_two,
+        'selected_column_one': selected_column_one,
+        'selected_column_two': selected_column_two,
+        'page': page,
+        'csrf_token': csrf_token
+    }
+
     service.year = request.form['year']
     try:
         if service.year:
@@ -483,29 +505,36 @@ def update(id):
                 # return redirect(url_for('index'))
                 """---------------------------------"""
 
-                page = request.args.get('page', 1, type=int)
-                keyword_one = request.args.get('keyword_one', None)
-                keyword_two = request.args.get('keyword_two', None)
-                selected_column_one=request.args.get('selected_column_one', None)
-                selected_column_two=request.args.get('selected_column_two', None)
-                year = request.args.get('year', "")
-                date_number_no_one = request.args.get('date_number_no_one', "")
+                # page = request.args.get('page', 1, type=int)
+                # keyword_one = request.args.get('keyword_one', None)
+                # keyword_two = request.args.get('keyword_two', None)
+                # selected_column_one=request.args.get('selected_column_one', None)
+                # selected_column_two=request.args.get('selected_column_two', None)
+                # year = request.args.get('year', "")
+                # date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+                # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
     except ValueError:
         flash('Вы ввели неверный формат Даты выдачи сертификата. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
         """---------------------------------"""
 
-        page = request.args.get('page', 1, type=int)
-        keyword_one = request.args.get('keyword_one', None)
-        keyword_two = request.args.get('keyword_two', None)
-        selected_column_one=request.args.get('selected_column_one', None)
-        selected_column_two=request.args.get('selected_column_two', None)
-        year = request.args.get('year', "")
-        date_number_no_one = request.args.get('date_number_no_one', "")
+        # page = request.args.get('page', 1, type=int)
+        # keyword_one = request.args.get('keyword_one', None)
+        # keyword_two = request.args.get('keyword_two', None)
+        # selected_column_one=request.args.get('selected_column_one', None)
+        # selected_column_two=request.args.get('selected_column_two', None)
+        # year = request.args.get('year', "")
+        # date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+        # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+
+        # Перенаправление с несколькими параметрами
+        return redirect(f"/?{urlencode(query_params)}")
 
     service.cost = request.form['cost']
     service.certificate = request.form['certificate']
@@ -522,29 +551,36 @@ def update(id):
                 # return redirect(url_for('index'))
                 """---------------------------------"""
 
-                page = request.args.get('page', 1, type=int)
-                keyword_one = request.args.get('keyword_one', None)
-                keyword_two = request.args.get('keyword_two', None)
-                selected_column_one=request.args.get('selected_column_one', None)
-                selected_column_two=request.args.get('selected_column_two', None)
-                year = request.args.get('year', "")
-                date_number_no_one = request.args.get('date_number_no_one', "")
+                # page = request.args.get('page', 1, type=int)
+                # keyword_one = request.args.get('keyword_one', None)
+                # keyword_two = request.args.get('keyword_two', None)
+                # selected_column_one=request.args.get('selected_column_one', None)
+                # selected_column_two=request.args.get('selected_column_two', None)
+                # year = request.args.get('year', "")
+                # date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+                # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
     except ValueError:
         flash('Вы ввели неверный формат Даты решения об отказе в выдаче. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
         """---------------------------------"""
 
-        page = request.args.get('page', 1, type=int)
-        keyword_one = request.args.get('keyword_one', None)
-        keyword_two = request.args.get('keyword_two', None)
-        selected_column_one=request.args.get('selected_column_one', None)
-        selected_column_two=request.args.get('selected_column_two', None)
-        year = request.args.get('year', "")
-        date_number_no_one = request.args.get('date_number_no_one', "")
+        # page = request.args.get('page', 1, type=int)
+        # keyword_one = request.args.get('keyword_one', None)
+        # keyword_two = request.args.get('keyword_two', None)
+        # selected_column_one=request.args.get('selected_column_one', None)
+        # selected_column_two=request.args.get('selected_column_two', None)
+        # year = request.args.get('year', "")
+        # date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+        # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+
+        # Перенаправление с несколькими параметрами
+        return redirect(f"/?{urlencode(query_params)}")
 
     service.date_number_no_two = request.form['date_number_no_two']
     service.certificate_no = request.form['certificate_no']
@@ -561,29 +597,36 @@ def update(id):
                 # return redirect(url_for('index'))
                 """---------------------------------"""
 
-                page = request.args.get('page', 1, type=int)
-                keyword_one = request.args.get('keyword_one', None)
-                keyword_two = request.args.get('keyword_two', None)
-                selected_column_one=request.args.get('selected_column_one', None)
-                selected_column_two=request.args.get('selected_column_two', None)
-                year = request.args.get('year', "")
-                date_number_no_one = request.args.get('date_number_no_one', "")
+                # page = request.args.get('page', 1, type=int)
+                # keyword_one = request.args.get('keyword_one', None)
+                # keyword_two = request.args.get('keyword_two', None)
+                # selected_column_one=request.args.get('selected_column_one', None)
+                # selected_column_two=request.args.get('selected_column_two', None)
+                # year = request.args.get('year', "")
+                # date_number_no_one = request.args.get('date_number_no_one', "")
 
-                return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+                # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+
+                # Перенаправление с несколькими параметрами
+                return redirect(f"/?{urlencode(query_params)}")
+
     except ValueError:
         flash('Вы ввели неверный формат Даты отправки почтой. Ожидаемый формат: ДД.ММ.ГГГГ.', 'danger')
         # return redirect(url_for('index'))
         """---------------------------------"""
 
-        page = request.args.get('page', 1, type=int)
-        keyword_one = request.args.get('keyword_one', None)
-        keyword_two = request.args.get('keyword_two', None)
-        selected_column_one=request.args.get('selected_column_one', None)
-        selected_column_two=request.args.get('selected_column_two', None)
-        year = request.args.get('year', "")
-        date_number_no_one = request.args.get('date_number_no_one', "")
+        # page = request.args.get('page', 1, type=int)
+        # keyword_one = request.args.get('keyword_one', None)
+        # keyword_two = request.args.get('keyword_two', None)
+        # selected_column_one=request.args.get('selected_column_one', None)
+        # selected_column_two=request.args.get('selected_column_two', None)
+        # year = request.args.get('year', "")
+        # date_number_no_one = request.args.get('date_number_no_one', "")
 
-        return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+        # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+
+        # Перенаправление с несколькими параметрами
+        return redirect(f"/?{urlencode(query_params)}")
 
     service.comment = request.form['comment']
     service.color = request.form.get('color')
@@ -596,15 +639,18 @@ def update(id):
     # return redirect(url_for('index'))
     """---------------------------------"""
 
-    page = request.args.get('page', 1, type=int)
-    keyword_one = request.args.get('keyword_one', None)
-    keyword_two = request.args.get('keyword_two', None)
-    selected_column_one=request.args.get('selected_column_one', None)
-    selected_column_two=request.args.get('selected_column_two', None)
-    year = request.args.get('year', "")
-    date_number_no_one = request.args.get('date_number_no_one', "")
-    return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+    # page = request.args.get('page', 1, type=int)
+    # keyword_one = request.args.get('keyword_one', None)
+    # keyword_two = request.args.get('keyword_two', None)
+    # selected_column_one=request.args.get('selected_column_one', None)
+    # selected_column_two=request.args.get('selected_column_two', None)
+    # year = request.args.get('year', "")
+    # date_number_no_one = request.args.get('date_number_no_one', "")
 
+    # return skeleton(date_number_no_one, year, keyword_one, keyword_two, selected_column_one, selected_column_two, page, csrf_token)
+
+    # Перенаправление с несколькими параметрами
+    return redirect(f"/?{urlencode(query_params)}")
 
 @app.route('/update-color/<int:id>', methods=['POST'])
 @login_required
