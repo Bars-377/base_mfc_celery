@@ -12,8 +12,8 @@ services:
     command: >
       sh -c "gunicorn --access-logfile - --error-logfile - -w 1 -k eventlet -b 0.0.0.0:5000 --timeout 120 app:app &&
             python app_files.py"
+    restart: unless-stopped
     deploy:
-      restart: unless-stopped
       resources:
         limits:
           memory: 1g
@@ -26,8 +26,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
     command: >
       celery -A app:celery worker --loglevel=INFO --pool=solo
+    restart: unless-stopped
     deploy:
-      restart: unless-stopped
       resources:
         limits:
           memory: 1g
@@ -42,8 +42,8 @@ services:
       - /etc/timezone:/etc/timezone:ro
     command: >
       celery -A app:celery flower --port=5555
+    restart: unless-stopped
     deploy:
-      restart: unless-stopped
       resources:
         limits:
           memory: 1g
