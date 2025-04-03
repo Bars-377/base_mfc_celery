@@ -8,20 +8,15 @@ services:
     volumes:
       - .:/app
     command: >
-      sh -c "gunicorn --access-logfile - --error-logfile - -w 1 -k eventlet -b 0.0.0.0:5000 --timeout 120 app:app &
+      sh -c "gunicorn --access-logfile - --error-logfile - -w 1 -k eventlet -b 0.0.0.0:5000 --timeout 120 app:app &&
             python app_files.py"
-    depends_on:
-      - worker
-      - flower
 
   worker:
     build: .
     volumes:
       - .:/app
     command: >
-      celery -A app:celery worker --concurrency=20 --loglevel=INFO --pool=solo
-    depends_on:
-      - redis
+      celery -A app:celery worker --loglevel=INFO --pool=solo
 
   flower:
     build: .
@@ -31,11 +26,3 @@ services:
       - .:/app
     command: >
       celery -A app:celery flower --port=5555
-    depends_on:
-      - redis
-
-  redis:
-    image: redis:7
-    restart: always
-    ports:
-      - "6379:6379"
