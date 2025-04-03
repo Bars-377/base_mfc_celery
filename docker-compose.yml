@@ -7,16 +7,30 @@ services:
       - "5000:5000"  # Gunicorn
     volumes:
       - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: >
       sh -c "gunicorn --access-logfile - --error-logfile - -w 1 -k eventlet -b 0.0.0.0:5000 --timeout 120 app:app &&
             python app_files.py"
+    deploy:
+      restart: unless-stopped
+      resources:
+        limits:
+          memory: 1g
 
   worker:
     build: .
     volumes:
       - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: >
       celery -A app:celery worker --loglevel=INFO --pool=solo
+    deploy:
+      restart: unless-stopped
+      resources:
+        limits:
+          memory: 1g
 
   flower:
     build: .
@@ -24,5 +38,12 @@ services:
       - "5555:5555"
     volumes:
       - .:/app
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     command: >
       celery -A app:celery flower --port=5555
+    deploy:
+      restart: unless-stopped
+      resources:
+        limits:
+          memory: 1g
