@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  web:
+  gunicorn:
     build: .
     ports:
       - "5000:5000"  # Gunicorn
@@ -10,13 +10,10 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     command: >
-      sh -c "gunicorn --access-logfile - --error-logfile - -w 1 -k eventlet -b 0.0.0.0:5000 --timeout 120 app:app &&
+      sh -c ". /venv/bin/activate && gunicorn --access-logfile - --error-logfile - -w 1 -k eventlet -b 0.0.0.0:5000 --timeout 120 app:app &&
             python app_files.py"
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 1g
+    mem_limit: 1g  # Ограничение памяти
 
   worker:
     build: .
@@ -25,12 +22,9 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     command: >
-      celery -A app:celery worker --loglevel=INFO --pool=solo
+      sh -c ". /venv/bin/activate && celery -A app:celery worker --loglevel=INFO --pool=solo"
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 1g
+    mem_limit: 1g  # Ограничение памяти
 
   flower:
     build: .
@@ -41,9 +35,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     command: >
-      celery -A app:celery flower --port=5555
+      sh -c ". /venv/bin/activate && celery -A app:celery flower --port=5555"
     restart: unless-stopped
-    deploy:
-      resources:
-        limits:
-          memory: 1g
+    mem_limit: 1g  # Ограничение памяти
